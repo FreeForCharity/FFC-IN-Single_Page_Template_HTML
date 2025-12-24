@@ -258,6 +258,9 @@ function initCookieConsent() {
   const analyticsCheckbox = document.getElementById('cookieAnalytics')
   const marketingCheckbox = document.getElementById('cookieMarketing')
 
+  // Track saved preferences for comparison
+  let savedPreferences = null
+
   // Check if consent has been given
   const consent = getCookie(COOKIE_CONSENT_NAME)
   if (!consent) {
@@ -265,18 +268,21 @@ function initCookieConsent() {
     cookieConsent.classList.add('show')
   } else {
     // Load saved preferences and apply them
+    savedPreferences = loadPreferences()
     loadAndApplyPreferences()
   }
 
   // Accept all cookies
   if (acceptAllBtn) {
     acceptAllBtn.addEventListener('click', () => {
-      savePreferences({
+      const newPreferences = {
         necessary: true,
         functional: true,
         analytics: true,
         marketing: true,
-      })
+      }
+      savePreferences(newPreferences, savedPreferences)
+      savedPreferences = newPreferences
       cookieConsent.classList.remove('show')
       loadAnalyticsScripts()
       loadMarketingScripts()
@@ -286,13 +292,17 @@ function initCookieConsent() {
   // Reject all cookies (except necessary and functional)
   if (rejectAllBtn) {
     rejectAllBtn.addEventListener('click', () => {
-      savePreferences({
+      const newPreferences = {
         necessary: true,
         functional: true,
         analytics: false,
         marketing: false,
-      })
+      }
+      savePreferences(newPreferences, savedPreferences)
+      savedPreferences = newPreferences
       cookieConsent.classList.remove('show')
+      // Delete third-party cookies when consent is withdrawn
+      deleteAnalyticsCookies()
     })
   }
 
@@ -307,19 +317,20 @@ function initCookieConsent() {
   // Save custom preferences
   if (savePreferencesBtn) {
     savePreferencesBtn.addEventListener('click', () => {
-      const preferences = {
+      const newPreferences = {
         necessary: true,
         functional: true,
         analytics: analyticsCheckbox.checked,
         marketing: marketingCheckbox.checked,
       }
-      savePreferences(preferences)
+      savePreferences(newPreferences, savedPreferences)
+      savedPreferences = newPreferences
       cookiePreferences.classList.remove('show')
 
-      if (preferences.analytics) {
+      if (newPreferences.analytics) {
         loadAnalyticsScripts()
       }
-      if (preferences.marketing) {
+      if (newPreferences.marketing) {
         loadMarketingScripts()
       }
     })
@@ -341,6 +352,25 @@ function initCookieConsent() {
     })
   }
 
+  // Click outside modal to close
+  if (cookiePreferences) {
+    cookiePreferences.addEventListener('click', (e) => {
+      // Only close if clicking the overlay itself, not the modal content
+      if (e.target === cookiePreferences) {
+        cookiePreferences.classList.remove('show')
+        cookieConsent.classList.add('show')
+      }
+    })
+  }
+
+  // Escape key to close modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && cookiePreferences.classList.contains('show')) {
+      cookiePreferences.classList.remove('show')
+      cookieConsent.classList.add('show')
+    }
+  })
+
   // Make openCookiePreferences available globally
   window.openCookiePreferences = showPreferencesModal
 }
@@ -360,15 +390,27 @@ function showPreferencesModal() {
   cookiePreferences.classList.add('show')
 }
 
-function savePreferences(preferences) {
+function savePreferences(preferences, previousPreferences) {
   setCookie(COOKIE_CONSENT_NAME, 'true', 365)
   setCookie(COOKIE_PREFERENCES_NAME, JSON.stringify(preferences), 365)
+
+  // Check if consent was withdrawn and delete cookies if needed
+  if (previousPreferences) {
+    if (
+      (previousPreferences.analytics && !preferences.analytics) ||
+      (previousPreferences.marketing && !preferences.marketing)
+    ) {
+      deleteAnalyticsCookies()
+    }
+  }
 
   // Push to dataLayer if available
   if (window.dataLayer) {
     window.dataLayer.push({
-      event: 'cookie_consent_update',
-      cookie_preferences: preferences,
+      event: 'consent_update',
+      functional_consent: preferences.functional ? 'granted' : 'denied',
+      analytics_consent: preferences.analytics ? 'granted' : 'denied',
+      marketing_consent: preferences.marketing ? 'granted' : 'denied',
     })
   }
 }
@@ -398,8 +440,34 @@ function loadAndApplyPreferences() {
   }
 }
 
+function deleteAnalyticsCookies() {
+  // List of static cookie names to delete
+  const cookiesToDelete = ['_ga', '_gid', '_fbp', 'fr', '_clck', '_clsk']
+
+  // Delete static cookies
+  cookiesToDelete.forEach((name) => {
+    // Delete for current domain
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+    // Also try to delete with domain specification
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`
+  })
+
+  // Dynamically delete all cookies matching _ga_* (e.g., _ga_G-XXXXXXXXXX)
+  if (typeof document !== 'undefined') {
+    document.cookie.split(';').forEach((cookie) => {
+      const cookieName = cookie.split('=')[0].trim()
+      if (cookieName.startsWith('_ga_')) {
+        // Delete for current domain
+        document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+        // Also try to delete with domain specification
+        document.cookie = `${cookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${window.location.hostname};`
+      }
+    })
+  }
+}
+
 function loadAnalyticsScripts() {
-  // Google Analytics would be loaded here
+  // Google Analytics
   const GA_MEASUREMENT_ID = 'G-XXXXXXXXXX' // Replace with actual ID
 
   if (!document.querySelector('script[src*="googletagmanager.com/gtag"]')) {
@@ -420,6 +488,25 @@ function loadAnalyticsScripts() {
             });
         `
     document.head.appendChild(gaConfigScript)
+  }
+
+  // Microsoft Clarity
+  loadMicrosoftClarity()
+}
+
+function loadMicrosoftClarity() {
+  const CLARITY_PROJECT_ID = 'XXXXXXXXXX' // Replace with actual ID
+
+  if (!document.querySelector('script[src*="clarity.ms"]')) {
+    const clarityScript = document.createElement('script')
+    clarityScript.textContent = `
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "${CLARITY_PROJECT_ID}");
+        `
+    document.head.appendChild(clarityScript)
   }
 }
 
