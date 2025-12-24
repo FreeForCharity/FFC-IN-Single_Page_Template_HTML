@@ -17,45 +17,68 @@ This document explains how the Free For Charity website is deployed to GitHub Pa
 
 ## Overview
 
-The Free For Charity website is a static Next.js application deployed to GitHub Pages. The site is accessible at:
+The Free For Charity website is deployed to GitHub Pages as a static HTML site. The site is accessible at:
 
-- **GitHub Pages URL**: https://freeforcharity.github.io/FFC_Single_Page_Template/
-- **Custom Domain**: https://ffcworkingsite1.org
+- **GitHub Pages URL**: https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
 
 ### Technology Stack
 
-- **Framework**: Next.js 16.0.7 with static export
-- **Hosting**: GitHub Pages
+- **Production**: Pure HTML, CSS, and vanilla JavaScript (in `html-site/` directory)
+- **Development**: Next.js 16.0.7 (in `src/` directory) - for testing and development only
+- **Hosting**: GitHub Pages (subpath deployment)
 - **CI/CD**: GitHub Actions
-- **Node.js**: Version 20.x
+- **Node.js**: Version 20.x (for CI testing only)
+
+### Dual-Version Architecture
+
+This repository maintains two versions:
+
+1. **HTML Static Site** (`html-site/` directory)
+   - **Purpose**: Production deployment
+   - **Description**: Pre-built pure HTML/CSS/JS site with basePath configured
+   - **Deployment**: Uploaded directly to GitHub Pages (no build step)
+   - **URL**: https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
+   - **Asset paths**: All assets use `/FFC-IN-Single_Page_Template_HTML/` basePath
+
+2. **Next.js SPA** (`src/` directory)
+   - **Purpose**: Development and testing
+   - **Description**: React/Next.js source code
+   - **Deployment**: NOT deployed; used only for CI validation
+   - **Build output**: `./out` (generated during CI, not deployed)
 
 ---
 
 ## Deployment Architecture
 
-### Static Site Generation
+### Production Deployment: HTML Static Site
 
-The application uses Next.js static export mode configured in `next.config.ts`:
+The production deployment uses the pre-built HTML static site located in the `html-site/` directory. This directory contains:
 
-```typescript
-const nextConfig: NextConfig = {
-  output: 'export',
-  images: {
-    unoptimized: true,
-  },
-}
-```
+- Pure HTML files (no React/JSX)
+- Compiled CSS in `css/styles.css`
+- Vanilla JavaScript in `js/main.js`
+- All images, icons, and assets
 
-This generates a static site in the `./out` directory that can be served by any static file server, including GitHub Pages.
+**Key characteristics:**
+- **No build step required**: Files are ready to serve as-is
+- **BasePath configured**: All assets use `/FFC-IN-Single_Page_Template_HTML/` prefix
+- **GitHub Pages subpath**: Deployed to `freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/`
+- **Fast deployment**: Simply upload directory to GitHub Pages
+
+### Development: Next.js Source
+
+The `src/` directory contains the Next.js source code used for:
+- Local development (`npm run dev`)
+- Automated testing in CI workflow
+- Code quality validation
+
+**Important**: The Next.js build output (`./out`) is NOT deployed to production. It's only used during CI for testing purposes.
 
 ### Asset Path Handling
 
-The site uses the `assetPath()` helper function (located in `src/lib/assetPath.ts`) to handle assets correctly for both:
+The HTML static site uses paths with the basePath prefix (e.g., `/FFC-IN-Single_Page_Template_HTML/favicon.ico`, `/FFC-IN-Single_Page_Template_HTML/images/logo.png`) which ensures assets load correctly when deployed to the GitHub Pages subpath.
 
-1. **GitHub Pages subpath deployment**: `/FFC_Single_Page_Template/`
-2. **Custom domain deployment**: Root path `/`
-
-The helper uses the `NEXT_PUBLIC_BASE_PATH` environment variable to determine the correct asset path.
+All HTML files have been pre-configured with the correct basePath for GitHub Pages deployment.
 
 ---
 
@@ -88,8 +111,10 @@ Runs on all pull requests and pushes to main:
 5. **Run linting**: Executes ESLint to catch code issues
 6. **Run unit tests**: Executes Jest tests to verify code quality
 7. **Install Playwright**: Sets up E2E testing environment
-8. **Build site**: Runs `next build` with appropriate environment variables
+8. **Build Next.js site**: Runs `next build` to validate the source code compiles
 9. **Run E2E tests**: Validates the built site with Playwright tests
+
+**Note**: The Next.js build in CI is for testing purposes only. The build output is not deployed.
 
 #### Deploy Workflow Steps (`.github/workflows/deploy.yml`)
 
@@ -100,22 +125,15 @@ Triggered automatically after the CI workflow completes successfully on push to 
 The actual steps performed by the deploy workflow are:
 
 1. **Checkout code**: Retrieves the tested code from the repository
-2. **Setup Node.js**: Installs Node.js 20.x
-3. **Setup Pages**: Configures GitHub Pages settings
-4. **Restore Next.js cache**: Restores build cache for faster builds
-5. **Install dependencies**: Runs `npm ci` for a clean installation
-6. **Build site**: Runs `next build` with basePath for GitHub Pages
-7. **Upload artifact**: Packages the `./out` directory
-8. **Deploy to GitHub Pages**: Publishes the site to GitHub Pages (separate job)
+2. **Setup Pages**: Configures GitHub Pages settings (no build parameters needed)
+3. **Upload artifact**: Packages the `./html-site` directory
+4. **Deploy to GitHub Pages**: Publishes the HTML static site (separate job)
 
-#### Environment Variables in CI
-
-```yaml
-env:
-  NEXT_PUBLIC_BASE_PATH: /FFC_Single_Page_Template
-```
-
-This ensures images and assets work correctly at the GitHub Pages subpath.
+**Key difference from Next.js deployment:**
+- No Node.js setup required
+- No dependencies to install
+- No build step
+- Direct upload of pre-built HTML files
 
 ### Viewing Deployment Status
 
