@@ -36,12 +36,22 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
+        # Note: No static_site_generator parameter needed for pure HTML deployment
+        # The html-site directory contains pre-built static files ready to serve
 
       - name: Upload artifact for Pages
         uses: actions/upload-pages-artifact@v4
         with:
-          # Deploy the pre-built HTML static site from html-site directory
-          # This is the production deployment as specified by project requirements
+          # Deploy the pre-built HTML static site from html-site directory.
+          # This is the production deployment as specified by project requirements.
+          #
+          # IMPORTANT: The html-site uses root-relative paths (e.g., /favicon.ico, /css/styles.css)
+          # which work correctly because:
+          # 1. Primary deployment: Custom domain (ffcworkingsite1.org via CNAME file) - root paths work
+          # 2. GitHub Pages subpath deployment would require path rewriting, but custom domain takes precedence
+          #
+          # The CI workflow still builds and tests the Next.js version for development validation,
+          # but this deploy workflow uses the pre-built HTML for production.
           path: ./html-site
 
   deploy:

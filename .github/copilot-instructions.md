@@ -1,8 +1,34 @@
 # Free For Charity Web Application
 
-Free For Charity is a Next.js 16.0.7 single-page static website that connects students, professionals, and businesses with nonprofits to reduce operating costs and increase impact. Built with TypeScript, Tailwind CSS, and configured for static export to GitHub Pages.
+Free For Charity is deployed as a pure HTML static website to GitHub Pages. The repository maintains both an HTML production version and a Next.js development version.
 
 **ALWAYS reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.**
+
+## Repository Architecture
+
+### Two-Version System
+
+This repository contains TWO versions of the website:
+
+1. **HTML Static Site** (`html-site/` directory)
+   - **Purpose**: PRODUCTION deployment to GitHub Pages
+   - **Technology**: Pure HTML, CSS, vanilla JavaScript
+   - **Deployment**: Direct upload, no build step
+   - **URL**: https://ffcworkingsite1.org
+   - **Status**: Production-ready, do not modify directly
+
+2. **Next.js SPA** (`src/` directory)
+   - **Purpose**: Development and testing only
+   - **Technology**: Next.js 16.0.7, TypeScript, Tailwind CSS
+   - **Deployment**: NOT deployed (CI testing only)
+   - **Usage**: Local development and automated testing
+
+### Deployment Flow
+
+1. **CI Workflow** (`.github/workflows/ci.yml`): Tests Next.js build for code quality
+2. **Deploy Workflow** (`.github/workflows/deploy.yml`): Deploys `html-site/` to GitHub Pages
+
+**Important**: Production uses `html-site/`, NOT the Next.js build output.
 
 ## Working Effectively
 
@@ -13,12 +39,21 @@ Free For Charity is a Next.js 16.0.7 single-page static website that connects st
 
 ### Bootstrap and Build Process
 
-**Build Process**
+**Next.js Build Process (Development/Testing Only)**
 
-- `npm run build` -- Builds the static site successfully (~30 seconds)
+- `npm run build` -- Builds the Next.js static site (~30 seconds)
+- Output goes to `./out` directory
+- Build is used for CI testing, NOT for deployment
 - Google Fonts are NOT used in this project (imports have been removed)
 - Build generates 12 static pages (1 homepage + 7 policy pages + 1 not-found page + 2 metadata files: sitemap.xml, robots.txt)
 - NEVER CANCEL. Set timeout to 180+ seconds for safety.
+
+**Production Deployment (HTML Static Site)**
+
+- Location: `html-site/` directory
+- No build step required
+- Pre-built HTML/CSS/JS files ready to serve
+- Deployed directly to GitHub Pages
 
 ### Core Commands and Timings
 
