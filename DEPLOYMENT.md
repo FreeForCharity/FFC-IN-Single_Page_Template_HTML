@@ -60,6 +60,7 @@ The production deployment uses the pre-built HTML static site located in the `ht
 - All images, icons, and assets
 
 **Key characteristics:**
+
 - **No build step required**: Files are ready to serve as-is
 - **BasePath configured**: All assets use `/FFC-IN-Single_Page_Template_HTML/` prefix
 - **GitHub Pages subpath**: Deployed to `freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/`
@@ -68,6 +69,7 @@ The production deployment uses the pre-built HTML static site located in the `ht
 ### Development: Next.js Source
 
 The `src/` directory contains the Next.js source code used for:
+
 - Local development (`npm run dev`)
 - Automated testing in CI workflow
 - Code quality validation
@@ -130,6 +132,7 @@ The actual steps performed by the deploy workflow are:
 4. **Deploy to GitHub Pages**: Publishes the HTML static site (separate job)
 
 **Key difference from Next.js deployment:**
+
 - No Node.js setup required
 - No dependencies to install
 - No build step
