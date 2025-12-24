@@ -4,16 +4,18 @@ import Header from './../components/header'
 import Footer from './../components/footer'
 import CookieConsent from './../components/cookie-consent'
 import GoogleTagManager, { GoogleTagManagerNoScript } from './../components/google-tag-manager'
-import {
-  openSans,
-  lato,
-  raleway,
-  faustina,
-  cantataOne,
-  faunaOne,
-  montserrat,
-  cinzel,
-} from '@/lib/fonts'
+// Google Fonts temporarily disabled due to build-time network access restrictions
+// in GitHub Actions environment. Fonts will be loaded via CSS fallbacks.
+// import {
+//   openSans,
+//   lato,
+//   raleway,
+//   faustina,
+//   cantataOne,
+//   faunaOne,
+//   montserrat,
+//   cinzel,
+// } from '@/lib/fonts'
 
 // Get basePath for GitHub Pages deployment
 const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ''
@@ -110,20 +112,7 @@ export default function RootLayout({
 
         <GoogleTagManager />
       </head>
-      <body
-        className={[
-          'antialiased',
-          openSans.variable,
-          lato.variable,
-          raleway.variable,
-          faustina.variable,
-          cantataOne.variable,
-          faunaOne.variable,
-          montserrat.variable,
-          cinzel.variable,
-        ].join(' ')}
-        suppressHydrationWarning={true}
-      >
+      <body className="antialiased" suppressHydrationWarning={true}>
         <GoogleTagManagerNoScript />
         {/* <PopupProvider> */}
         <Header />

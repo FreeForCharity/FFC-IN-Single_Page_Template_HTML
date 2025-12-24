@@ -10,13 +10,11 @@ import {
 } from 'next/font/google'
 
 // Configure fonts with proper subsets and display strategy
-// Using fallbackFont option to provide system fonts as fallback
 export const openSans = Open_Sans({
   subsets: ['latin'],
   display: 'swap',
   variable: '--font-open-sans',
   weight: ['400', '500', '600', '700', '800'],
-  fallback: ['system-ui', 'Arial', 'sans-serif'],
 })
 
 export const lato = Lato({
@@ -24,7 +22,6 @@ export const lato = Lato({
   display: 'swap',
   variable: '--font-lato',
   weight: ['400', '700'],
-  fallback: ['system-ui', 'Arial', 'sans-serif'],
 })
 
 export const raleway = Raleway({
@@ -32,7 +29,6 @@ export const raleway = Raleway({
   display: 'swap',
   variable: '--font-raleway',
   weight: ['400', '500', '600', '700'],
-  fallback: ['system-ui', 'Arial', 'sans-serif'],
 })
 
 export const faustina = Faustina({
@@ -40,7 +36,6 @@ export const faustina = Faustina({
   display: 'swap',
   variable: '--font-faustina',
   weight: ['400', '500', '600', '700'],
-  fallback: ['Georgia', 'serif'],
 })
 
 export const cantataOne = Cantata_One({
@@ -48,7 +43,6 @@ export const cantataOne = Cantata_One({
   display: 'swap',
   variable: '--font-cantata-one',
   weight: '400',
-  fallback: ['Georgia', 'serif'],
 })
 
 export const faunaOne = Fauna_One({
@@ -56,7 +50,6 @@ export const faunaOne = Fauna_One({
   display: 'swap',
   variable: '--font-fauna-one',
   weight: '400',
-  fallback: ['Georgia', 'serif'],
 })
 
 export const montserrat = Montserrat({
@@ -64,7 +57,6 @@ export const montserrat = Montserrat({
   display: 'swap',
   variable: '--font-montserrat',
   weight: ['400', '500', '600', '700'],
-  fallback: ['system-ui', 'Arial', 'sans-serif'],
 })
 
 export const cinzel = Cinzel({
@@ -72,5 +64,4 @@ export const cinzel = Cinzel({
   display: 'swap',
   variable: '--font-cinzel',
   weight: ['400', '500', '600', '700'],
-  fallback: ['Georgia', 'serif'],
 })
