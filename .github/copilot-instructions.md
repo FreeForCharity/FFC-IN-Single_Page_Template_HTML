@@ -1,6 +1,6 @@
 # Free For Charity Web Application
 
-Free For Charity is deployed as a pure HTML static website to GitHub Pages. The repository maintains both an HTML production version and a Next.js development version.
+Free For Charity is deployed as a pure HTML static website to GitHub Pages at a subpath. The repository maintains both an HTML production version and a Next.js development version.
 
 **ALWAYS reference these instructions first and fallback to search or bash commands only when you encounter unexpected information that does not match the info here.**
 
@@ -14,8 +14,9 @@ This repository contains TWO versions of the website:
    - **Purpose**: PRODUCTION deployment to GitHub Pages
    - **Technology**: Pure HTML, CSS, vanilla JavaScript
    - **Deployment**: Direct upload, no build step
-   - **URL**: https://ffcworkingsite1.org
-   - **Status**: Production-ready, do not modify directly
+   - **URL**: https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
+   - **Status**: Production-ready with basePath configured
+   - **Asset paths**: All paths include `/FFC-IN-Single_Page_Template_HTML/` prefix
 
 2. **Next.js SPA** (`src/` directory)
    - **Purpose**: Development and testing only
@@ -28,7 +29,7 @@ This repository contains TWO versions of the website:
 1. **CI Workflow** (`.github/workflows/ci.yml`): Tests Next.js build for code quality
 2. **Deploy Workflow** (`.github/workflows/deploy.yml`): Deploys `html-site/` to GitHub Pages
 
-**Important**: Production uses `html-site/`, NOT the Next.js build output.
+**Important**: Production uses `html-site/` with basePath `/FFC-IN-Single_Page_Template_HTML/`, NOT the Next.js build output.
 
 ## Working Effectively
 

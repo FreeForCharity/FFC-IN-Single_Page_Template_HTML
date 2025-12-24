@@ -19,14 +19,13 @@ This document explains how the Free For Charity website is deployed to GitHub Pa
 
 The Free For Charity website is deployed to GitHub Pages as a static HTML site. The site is accessible at:
 
-- **Custom Domain (Primary)**: https://ffcworkingsite1.org
-- **GitHub Pages URL (Fallback)**: https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
+- **GitHub Pages URL**: https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
 
 ### Technology Stack
 
 - **Production**: Pure HTML, CSS, and vanilla JavaScript (in `html-site/` directory)
 - **Development**: Next.js 16.0.7 (in `src/` directory) - for testing and development only
-- **Hosting**: GitHub Pages
+- **Hosting**: GitHub Pages (subpath deployment)
 - **CI/CD**: GitHub Actions
 - **Node.js**: Version 20.x (for CI testing only)
 
@@ -36,9 +35,10 @@ This repository maintains two versions:
 
 1. **HTML Static Site** (`html-site/` directory)
    - **Purpose**: Production deployment
-   - **Description**: Pre-built pure HTML/CSS/JS site
+   - **Description**: Pre-built pure HTML/CSS/JS site with basePath configured
    - **Deployment**: Uploaded directly to GitHub Pages (no build step)
-   - **Access**: https://ffcworkingsite1.org
+   - **URL**: https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
+   - **Asset paths**: All assets use `/FFC-IN-Single_Page_Template_HTML/` basePath
 
 2. **Next.js SPA** (`src/` directory)
    - **Purpose**: Development and testing
@@ -58,12 +58,11 @@ The production deployment uses the pre-built HTML static site located in the `ht
 - Compiled CSS in `css/styles.css`
 - Vanilla JavaScript in `js/main.js`
 - All images, icons, and assets
-- CNAME file for custom domain configuration
 
 **Key characteristics:**
 - **No build step required**: Files are ready to serve as-is
-- **Root-relative paths**: All assets use paths like `/favicon.ico`, `/css/styles.css`
-- **Custom domain**: Configured via CNAME file for `ffcworkingsite1.org`
+- **BasePath configured**: All assets use `/FFC-IN-Single_Page_Template_HTML/` prefix
+- **GitHub Pages subpath**: Deployed to `freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/`
 - **Fast deployment**: Simply upload directory to GitHub Pages
 
 ### Development: Next.js Source
@@ -77,11 +76,9 @@ The `src/` directory contains the Next.js source code used for:
 
 ### Asset Path Handling
 
-The HTML static site uses root-relative paths (e.g., `/favicon.ico`, `/images/logo.png`) which work correctly because:
+The HTML static site uses paths with the basePath prefix (e.g., `/FFC-IN-Single_Page_Template_HTML/favicon.ico`, `/FFC-IN-Single_Page_Template_HTML/images/logo.png`) which ensures assets load correctly when deployed to the GitHub Pages subpath.
 
-1. **Primary deployment**: Custom domain (`ffcworkingsite1.org`) serves files at root path
-2. **CNAME file**: Located in `html-site/CNAME`, ensures custom domain configuration
-3. **GitHub Pages**: Respects CNAME and serves at root when custom domain is configured
+All HTML files have been pre-configured with the correct basePath for GitHub Pages deployment.
 
 ---
 
