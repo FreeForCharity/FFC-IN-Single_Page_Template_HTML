@@ -799,6 +799,14 @@ h6 {
   margin-top: 50px;
 }
 
+.team-grid-top {
+  margin-bottom: 40px;
+}
+
+.team-grid-bottom {
+  margin-top: 0;
+}
+
 .team-member {
   background-color: var(--color-white);
   padding: 30px;
@@ -838,22 +846,35 @@ h6 {
   display: flex;
   justify-content: center;
   gap: 15px;
+  margin-top: 20px;
 }
 
 .team-member-social img {
-  width: 24px;
-  height: 24px;
+  width: 63px;
+  height: 63px;
 }
 
 @media (min-width: 768px) {
   .team-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .team-grid-bottom {
+    justify-content: center;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
 
 @media (min-width: 1024px) {
   .team-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  .team-grid-bottom {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 800px;
   }
 }
 
