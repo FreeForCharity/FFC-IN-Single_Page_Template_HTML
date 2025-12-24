@@ -1,5 +1,22 @@
 # Free For Charity Website
 
+## 🎉 HTML Conversion Complete!
+
+This repository now contains **both versions** of the Free For Charity website:
+
+1. **React/Next.js Version** (original) - In `src/` directory
+2. **Pure HTML Version** (new) - In `html-site/` directory
+
+### Quick Links
+
+- 📄 **[HTML Site](./html-site/README.md)** - Pure HTML/CSS/JS version (recommended for simplicity)
+- 🔄 **[Conversion Summary](./HTML_CONVERSION_SUMMARY.md)** - Complete conversion details
+- 📋 **[What Was NOT Converted](./html-site/REACT_TO_HTML_CONVERSION.md)** - Features that require React
+
+---
+
+## Original React/Next.js Version
+
 Single-page Next.js 16.0.7 website built with App Router for Free For Charity nonprofit organization.
 
 ## 🎉 Phase 5 Implementation Complete
