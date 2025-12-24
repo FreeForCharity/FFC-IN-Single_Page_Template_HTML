@@ -476,6 +476,119 @@ document.addEventListener('DOMContentLoaded', () => {
 })
 
 // ===========================
+// Testimonials Carousel
+// ===========================
+
+function initTestimonials() {
+  const testimonialCards = document.querySelectorAll('.testimonial-card')
+  const prevBtn = document.querySelector('.testimonial-prev')
+  const nextBtn = document.querySelector('.testimonial-next')
+  const dots = document.querySelectorAll('.testimonial-dot')
+  
+  if (!testimonialCards.length) return
+  
+  let currentIndex = 0
+  const totalTestimonials = testimonialCards.length
+  
+  // Auto-advance timer
+  let autoAdvanceTimer
+  
+  function showTestimonial(index) {
+    // Hide all testimonials
+    testimonialCards.forEach(card => card.classList.remove('active'))
+    dots.forEach(dot => dot.classList.remove('active'))
+    
+    // Show current testimonial
+    testimonialCards[index].classList.add('active')
+    dots[index].classList.add('active')
+    
+    // Update arrow states
+    if (prevBtn) prevBtn.disabled = index === 0
+    if (nextBtn) nextBtn.disabled = index === totalTestimonials - 1
+    
+    currentIndex = index
+  }
+  
+  function nextTestimonial() {
+    const nextIndex = (currentIndex + 1) % totalTestimonials
+    showTestimonial(nextIndex)
+    resetAutoAdvance()
+  }
+  
+  function prevTestimonial() {
+    const prevIndex = (currentIndex - 1 + totalTestimonials) % totalTestimonials
+    showTestimonial(prevIndex)
+    resetAutoAdvance()
+  }
+  
+  function goToTestimonial(index) {
+    showTestimonial(index)
+    resetAutoAdvance()
+  }
+  
+  function startAutoAdvance() {
+    autoAdvanceTimer = setInterval(() => {
+      nextTestimonial()
+    }, 5000) // Auto-advance every 5 seconds
+  }
+  
+  function stopAutoAdvance() {
+    if (autoAdvanceTimer) {
+      clearInterval(autoAdvanceTimer)
+    }
+  }
+  
+  function resetAutoAdvance() {
+    stopAutoAdvance()
+    startAutoAdvance()
+  }
+  
+  // Event listeners
+  if (prevBtn) {
+    prevBtn.addEventListener('click', prevTestimonial)
+  }
+  
+  if (nextBtn) {
+    nextBtn.addEventListener('click', nextTestimonial)
+  }
+  
+  dots.forEach((dot, index) => {
+    dot.addEventListener('click', () => goToTestimonial(index))
+  })
+  
+  // Pause auto-advance on hover
+  const testimonialsWrapper = document.querySelector('.testimonials-wrapper')
+  if (testimonialsWrapper) {
+    testimonialsWrapper.addEventListener('mouseenter', stopAutoAdvance)
+    testimonialsWrapper.addEventListener('mouseleave', startAutoAdvance)
+  }
+  
+  // Keyboard navigation
+  document.addEventListener('keydown', (e) => {
+    if (document.querySelector('.testimonials-section:hover')) {
+      if (e.key === 'ArrowLeft') {
+        prevTestimonial()
+      } else if (e.key === 'ArrowRight') {
+        nextTestimonial()
+      }
+    }
+  })
+  
+  // Initialize
+  showTestimonial(0)
+  startAutoAdvance()
+  
+  console.log('Testimonials carousel initialized')
+}
+
+// Initialize testimonials when DOM is loaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initTestimonials)
+} else {
+  initTestimonials()
+}
+
+// ===========================
 // Export functions for global access
 // ===========================
 

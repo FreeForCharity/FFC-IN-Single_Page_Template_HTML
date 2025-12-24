@@ -1168,3 +1168,303 @@ h6 {
     flex: 1;
   }
 }
+
+/* ========================================
+   Testimonials Section
+   ======================================== */
+.testimonials-section {
+  padding: 80px 20px 100px;
+  background-color: #fcfcfc;
+}
+
+.testimonials-wrapper {
+  position: relative;
+  max-width: 1150px;
+  margin: 0 auto;
+  padding: 60px 20px;
+}
+
+.testimonial-card {
+  display: none;
+  padding: 0 80px;
+  position: relative;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.testimonial-card.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.testimonial-quotes {
+  position: relative;
+}
+
+.quote-left,
+.quote-right {
+  position: absolute;
+  width: 36px;
+  height: 36px;
+  opacity: 0.2;
+}
+
+.quote-left {
+  left: 10px;
+  top: -40px;
+}
+
+.quote-right {
+  right: 10px;
+  bottom: -40px;
+}
+
+.testimonial-heading {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #333;
+  line-height: 1.2;
+  font-style: italic;
+  text-align: center;
+}
+
+.testimonial-text {
+  font-size: 17px;
+  font-weight: 500;
+  color: #000;
+  font-style: italic;
+  padding: 0 20px;
+  text-align: center;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.testimonial-name {
+  font-size: 14px;
+  font-weight: 500;
+  margin: 10px 0;
+  color: #666;
+  text-align: center;
+}
+
+.testimonial-location {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2ea3f2;
+  text-align: center;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.testimonial-location:hover {
+  color: #1e7ec0;
+  text-decoration: underline;
+}
+
+/* Testimonial Navigation Arrows */
+.testimonial-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  z-index: 10;
+  padding: 10px;
+  transition: opacity 0.3s ease;
+  color: #666;
+}
+
+.testimonial-arrow:hover {
+  color: #000;
+}
+
+.testimonial-arrow:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.testimonial-prev {
+  left: 10px;
+}
+
+.testimonial-next {
+  right: 10px;
+}
+
+.arrow-icon {
+  font-size: 36px;
+  font-weight: 300;
+  line-height: 1;
+}
+
+/* Testimonial Dots */
+.testimonial-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 40px;
+}
+
+.testimonial-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: #ccc;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.testimonial-dot:hover {
+  background-color: #999;
+}
+
+.testimonial-dot.active {
+  width: 32px;
+  border-radius: 4px;
+  background-color: #f27022;
+}
+
+/* Responsive Testimonials */
+@media (max-width: 768px) {
+  .testimonial-card {
+    padding: 0 50px;
+  }
+
+  .quote-left,
+  .quote-right {
+    width: 24px;
+    height: 24px;
+  }
+
+  .quote-left {
+    left: 5px;
+    top: -30px;
+  }
+
+  .quote-right {
+    right: 5px;
+    bottom: -30px;
+  }
+
+  .testimonial-text {
+    padding: 0 10px;
+  }
+
+  .testimonial-prev {
+    left: 5px;
+  }
+
+  .testimonial-next {
+    right: 5px;
+  }
+
+  .arrow-icon {
+    font-size: 28px;
+  }
+}
+
+/* ========================================
+   Endowment Features Section
+   ======================================== */
+.endowment-section {
+  padding: 60px 20px 30px;
+  background-color: #fff;
+}
+
+.endowment-section .section-title {
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #000;
+}
+
+.endowment-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+@media (min-width: 1024px) {
+  .endowment-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.endowment-card {
+  padding: 30px 16px;
+  border-radius: 16px;
+  border: 3px solid #2a6682;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.endowment-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(42, 102, 130, 0.15);
+}
+
+.endowment-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.endowment-icon img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+.endowment-card-title {
+  font-size: 28px;
+  font-weight: 400;
+  color: #000;
+  line-height: 1;
+  margin-bottom: 15px;
+}
+
+.endowment-card-text {
+  font-size: 18px;
+  font-weight: 400;
+  color: #000;
+  line-height: 1.4;
+}
+
+/* Responsive Endowment */
+@media (max-width: 768px) {
+  .endowment-section .section-title {
+    font-size: 32px;
+  }
+
+  .endowment-card-title {
+    font-size: 24px;
+  }
+
+  .endowment-card-text {
+    font-size: 16px;
+  }
+}
