@@ -1206,9 +1206,9 @@ h6 {
   margin: 0.5rem 0;
 }
 
-.cookie-preference-services {
-  font-size: 0.75rem !important;
-  color: #6b7280 !important;
+.cookie-preference-item .cookie-preference-services {
+  font-size: 0.75rem;
+  color: #6b7280;
 }
 
 /* Toggle Switch Styles */
