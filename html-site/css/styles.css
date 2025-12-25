@@ -438,6 +438,11 @@ h6 {
   flex-wrap: wrap;
 }
 
+.hero-buttons .btn {
+  width: 147.5px;
+  flex-shrink: 0;
+}
+
 .hero-image {
   position: relative;
   width: 100%;
@@ -478,6 +483,10 @@ h6 {
 
   .btn-large {
     width: 351px;
+  }
+
+  .hero-buttons .btn {
+    width: 173px;
   }
 }
 
