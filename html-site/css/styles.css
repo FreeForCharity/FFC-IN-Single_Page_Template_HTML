@@ -564,7 +564,7 @@ h6 {
   font-family: var(--font-faustina);
   font-size: 64px;
   font-weight: 400;
-  color: var(--color-text);
+  color: var(--color-black);
   margin-bottom: 15px;
 }
 
@@ -572,7 +572,7 @@ h6 {
   font-family: var(--font-lato);
   font-size: 25px;
   font-weight: 400;
-  color: var(--color-text);
+  color: var(--color-black);
   text-align: center;
 }
 
