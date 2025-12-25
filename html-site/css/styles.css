@@ -762,8 +762,7 @@ h6 {
   background-color: #2a6682;
 }
 
-.volunteer-section .section-title,
-.volunteer-section .section-description {
+.volunteer-section .section-title {
   color: var(--color-white);
 }
 
@@ -804,10 +803,6 @@ h6 {
   width: 85%;
   max-width: 900px;
   order: 1;
-}
-
-.volunteer-info h3 {
-  display: none;
 }
 
 .volunteer-info p {
