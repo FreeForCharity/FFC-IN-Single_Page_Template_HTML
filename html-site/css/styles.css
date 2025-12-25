@@ -174,7 +174,7 @@ h6 {
 
 @media (min-width: 1024px) {
   .section-description {
-    font-size: 25px;
+    font-size: 22px;
   }
 }
 
@@ -737,7 +737,6 @@ h6 {
 
 @media (min-width: 768px) {
   .results-grid {
-    grid-template-columns: repeat(2, 1fr);
     gap: 40px;
   }
 }
@@ -759,14 +758,21 @@ h6 {
    =========================== */
 
 .volunteer-section {
-  padding: 60px 0;
+  padding: 40px 0;
+  background-color: #2a6682;
+}
+
+.volunteer-section .section-title,
+.volunteer-section .section-description {
+  color: var(--color-white);
 }
 
 .volunteer-content {
-  display: grid;
-  grid-template-columns: 1fr;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   gap: 30px;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 
 @media (min-width: 640px) {
@@ -777,10 +783,14 @@ h6 {
 
 @media (min-width: 768px) {
   .volunteer-content {
-    grid-template-columns: repeat(2, 1fr);
-    align-items: center;
     gap: 40px;
   }
+}
+
+.volunteer-image {
+  width: 100%;
+  max-width: 1083px;
+  order: 2;
 }
 
 .volunteer-image img {
@@ -789,22 +799,15 @@ h6 {
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
 }
 
+.volunteer-info {
+  text-align: center;
+  width: 85%;
+  max-width: 900px;
+  order: 1;
+}
+
 .volunteer-info h3 {
-  font-family: var(--font-faustina);
-  font-size: 28px;
-  margin-bottom: 20px;
-}
-
-@media (min-width: 640px) {
-  .volunteer-info h3 {
-    font-size: 30px;
-  }
-}
-
-@media (min-width: 768px) {
-  .volunteer-info h3 {
-    font-size: 32px;
-  }
+  display: none;
 }
 
 .volunteer-info p {
@@ -812,18 +815,26 @@ h6 {
   font-size: 16px;
   line-height: 1.6;
   margin-bottom: 30px;
+  color: var(--color-white);
+  font-weight: 500;
 }
 
 @media (min-width: 640px) {
   .volunteer-info p {
-    font-size: 17px;
+    font-size: 18px;
   }
 }
 
 @media (min-width: 768px) {
   .volunteer-info p {
-    font-size: 18px;
+    font-size: 20px;
+    line-height: 1.5;
   }
+}
+
+.volunteer-info .btn {
+  margin: 0 auto;
+  display: inline-flex;
 }
 
 /* ===========================
@@ -1138,7 +1149,6 @@ h6 {
 
 @media (min-width: 768px) {
   .team-grid {
-    grid-template-columns: repeat(2, 1fr);
     gap: 40px;
   }
 }
@@ -1956,13 +1966,6 @@ h6 {
 }
 
 @media (min-width: 640px) {
-  .endowment-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 22px;
-  }
-}
-
-@media (min-width: 1024px) {
   .endowment-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 24px;
