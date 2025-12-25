@@ -885,13 +885,6 @@ h6 {
   }
 }
 
-@media (min-width: 1024px) {
-  .donate-content {
-    flex-direction: row;
-    gap: 20px;
-  }
-}
-
 .donate-text-column {
   display: flex;
   flex-direction: column;
