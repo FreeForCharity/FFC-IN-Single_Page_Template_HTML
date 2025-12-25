@@ -230,19 +230,23 @@
       <!-- Results 2023 Section -->
       <section id="results" class="results-section">
         <div class="container">
-          <h2 class="section-title">2023 Impact Results</h2>
+          <h2 class="section-title">Results - 2023</h2>
           <div class="results-grid">
             <div class="result-card">
-              <div class="result-number" data-target="50">0</div>
-              <div class="result-label">Nonprofits Supported</div>
+              <div class="result-number" data-target="221">0</div>
+              <div class="result-label">Organizational partners</div>
             </div>
             <div class="result-card">
-              <div class="result-number" data-target="150000">$0</div>
-              <div class="result-label">Value Delivered</div>
+              <div class="result-number" data-target="3">0</div>
+              <div class="result-label">Total volunteers</div>
+            </div>
+            <div class="result-card">
+              <div class="result-number" data-target="221">0</div>
+              <div class="result-label">Organizations accessing technical assistance offerings</div>
             </div>
             <div class="result-card">
               <div class="result-number" data-target="25">0</div>
-              <div class="result-label">Active Volunteers</div>
+              <div class="result-label">Volunteer hours contributed to the organization</div>
             </div>
           </div>
         </div>
@@ -465,21 +469,49 @@
       <section id="donate" class="donate-section">
         <div class="container">
           <h2 class="section-title">Support Free For Charity</h2>
-          <p class="section-description">
-            Your donation helps us provide free services to nonprofits across the country.
-          </p>
 
-          <div class="donate-widget">
-            <iframe
-              src="https://www.zeffy.com/en-US/embed/donation-form/7d8b3e8c-4f1a-4d9e-8c5b-6e7f8a9b0c1d"
-              frameborder="0"
-              width="100%"
-              height="800"
-              title="Zeffy Donation Form"
-              loading="lazy"
-              sandbox="allow-scripts allow-same-origin allow-forms"
-            >
-            </iframe>
+          <div class="donate-content">
+            <!-- Left side: Description and pointing hands image -->
+            <div class="donate-text-column">
+              <p class="donate-description">
+                By donating you help drive our mission and allow us to support more charities with
+                our Domain, Website, and other services.
+              </p>
+              <!-- Pointing hands image - flipped horizontally to point toward the form on the right -->
+              <div class="donate-image-container">
+                <img
+                  src="/FFC-IN-Single_Page_Template_HTML/images/support-free-for-charity.webp"
+                  alt="support free for charity image"
+                  class="donate-image"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+
+            <!-- Right side: Zeffy Donation Form -->
+            <div class="donate-form-column">
+              <div class="donate-form-wrapper">
+                <iframe
+                  src="https://www.zeffy.com/embed/donation-form/free-for-charity-endowment-fund"
+                  width="100%"
+                  height="100%"
+                  title="Donation form powered by Zeffy"
+                  loading="lazy"
+                  allowpaymentrequest=""
+                  style="
+                    position: absolute;
+                    border: 0;
+                    top: 0;
+                    left: 0;
+                    bottom: 0;
+                    right: 0;
+                    width: 100%;
+                    height: 100%;
+                  "
+                >
+                </iframe>
+              </div>
+            </div>
           </div>
         </div>
         <div class="section-divider"></div>
