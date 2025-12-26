@@ -487,6 +487,12 @@
 
             <!-- Right side: Zeffy Donation Form -->
             <div class="donate-form-column">
+              <!--
+                Note: Inline styles are intentionally duplicated here as a failsafe.
+                These critical positioning styles (position: relative, height: 600px)
+                ensure the iframe is properly constrained even if the external CSS
+                file (css/styles.css) fails to load due to network issues.
+              -->
               <div
                 class="donate-form-wrapper"
                 style="
@@ -494,7 +500,7 @@
                   width: 100%;
                   max-width: 500px;
                   height: 600px;
-                  background-color: #ffffff;
+                  background-color: var(--color-white);
                   border-radius: 10px;
                   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
                   overflow: hidden;
@@ -507,7 +513,8 @@
                   title="Donation form powered by Zeffy"
                   loading="lazy"
                   allowpaymentrequest=""
-                  style="border: 0; display: block; width: 100%; height: 100%;"
+                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                  style="border: 0; display: block; width: 100%; height: 100%"
                 >
                 </iframe>
               </div>
