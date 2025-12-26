@@ -233,12 +233,13 @@ The site uses a custom domain with CNAME files in both directories:
    - `public/CNAME` - Development reference (for Next.js builds, not deployed)
 
    Both files should contain:
+
    ```
    ffcworkingsite2.org
    ```
 
 2. **Configure DNS records** at your domain provider:
-   
+
    For apex domain (ffcworkingsite2.org):
    - **Type**: A or ALIAS (depending on DNS provider)
    - **Name**: @ (root domain)
@@ -247,7 +248,7 @@ The site uses a custom domain with CNAME files in both directories:
      - 185.199.109.153
      - 185.199.110.153
      - 185.199.111.153
-   
+
    For www subdomain (optional):
    - **Type**: CNAME
    - **Name**: www
