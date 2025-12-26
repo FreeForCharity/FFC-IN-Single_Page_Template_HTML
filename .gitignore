@@ -47,3 +47,9 @@ next-env.d.ts
 # Decap CMS uploads
 /public/uploads
 *.bak
+
+# Documentation files should not be in production deployment directory
+# These should only exist in the repository root for documentation purposes
+/html-site/README.md
+/html-site/*.md
+/html-site/TEST_*.html
