@@ -1,11 +1,8 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Runs after CI workflow completes successfully on main branch
-  workflow_run:
-    workflows: ['CI - Build and Test']
-    types:
-      - completed
+  # Runs on pushes to main branch
+  push:
     branches: ['main']
 
   # Allows manual deployment from Actions tab
@@ -27,8 +24,6 @@ jobs:
   build:
     name: Build for GitHub Pages
     runs-on: ubuntu-latest
-    # Only run if CI workflow succeeded or if manually triggered
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
 
     steps:
       - name: Checkout repository
@@ -43,14 +38,10 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           # Deploy the pre-built HTML static site from html-site directory.
-          # This is the production deployment as specified by project requirements.
           #
           # Asset paths use the basePath /FFC-IN-Single_Page_Template_HTML/ for GitHub Pages subpath deployment.
           # All HTML files have been updated with the correct basePath to ensure assets load properly at:
           # https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
-          #
-          # The CI workflow still builds and tests the Next.js version for development validation,
-          # but this deploy workflow uses the pre-built HTML for production.
           path: ./html-site
 
   deploy:

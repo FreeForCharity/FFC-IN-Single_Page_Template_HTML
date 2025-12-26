@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This document explains how the Free For Charity website is deployed to GitHub Pages and provides troubleshooting guidance for deployment issues.
+This document explains how the Free For Charity website is deployed to GitHub Pages.
 
 ## Table of Contents
 
@@ -9,9 +9,8 @@ This document explains how the Free For Charity website is deployed to GitHub Pa
 3. [Automated Deployment](#automated-deployment)
 4. [Manual Deployment](#manual-deployment)
 5. [Domain Configuration](#domain-configuration)
-6. [Environment Variables](#environment-variables)
-7. [Troubleshooting](#troubleshooting)
-8. [Rollback Procedures](#rollback-procedures)
+6. [Troubleshooting](#troubleshooting)
+7. [Rollback Procedures](#rollback-procedures)
 
 ---
 
@@ -19,67 +18,38 @@ This document explains how the Free For Charity website is deployed to GitHub Pa
 
 The Free For Charity website is deployed to GitHub Pages as a static HTML site. The site is accessible at:
 
-- **Custom Domain**: https://ffcworkingsite2.org/ (Primary)
-- **GitHub Pages URL**: https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/ (Fallback)
+- **GitHub Pages URL**: https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
+- **Custom Domain**: (If configured via CNAME file)
 
 ### Technology Stack
 
-- **Production**: Pure HTML, CSS, and vanilla JavaScript (in `html-site/` directory)
-- **Development**: Next.js 16.0.7 (in `src/` directory) - for testing and development only
+- **Production**: Pure HTML, CSS, and vanilla JavaScript
 - **Hosting**: GitHub Pages (subpath deployment)
 - **CI/CD**: GitHub Actions
-- **Node.js**: Version 20.x (for CI testing only)
-
-### Dual-Version Architecture
-
-This repository maintains two versions:
-
-1. **HTML Static Site** (`html-site/` directory)
-   - **Purpose**: Production deployment
-   - **Description**: Pre-built pure HTML/CSS/JS site with basePath configured
-   - **Deployment**: Uploaded directly to GitHub Pages (no build step)
-   - **URL**: https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
-   - **Asset paths**: All assets use `/FFC-IN-Single_Page_Template_HTML/` basePath
-
-2. **Next.js SPA** (`src/` directory)
-   - **Purpose**: Development and testing
-   - **Description**: React/Next.js source code
-   - **Deployment**: NOT deployed; used only for CI validation
-   - **Build output**: `./out` (generated during CI, not deployed)
+- **No Build Process**: Files are served directly from the repository
 
 ---
 
 ## Deployment Architecture
 
-### Production Deployment: HTML Static Site
+### Repository Structure
 
-The production deployment uses the pre-built HTML static site located in the `html-site/` directory. This directory contains:
-
-- Pure HTML files (no React/JSX)
-- Compiled CSS in `css/styles.css`
-- Vanilla JavaScript in `js/main.js`
-- All images, icons, and assets
-
-**Key characteristics:**
-
-- **No build step required**: Files are ready to serve as-is
-- **BasePath configured**: All assets use `/FFC-IN-Single_Page_Template_HTML/` prefix
-- **GitHub Pages subpath**: Deployed to `freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/`
-- **Fast deployment**: Simply upload directory to GitHub Pages
-
-### Development: Next.js Source
-
-The `src/` directory contains the Next.js source code used for:
-
-- Local development (`npm run dev`)
-- Automated testing in CI workflow
-- Code quality validation
-
-**Important**: The Next.js build output (`./out`) is NOT deployed to production. It's only used during CI for testing purposes.
+```
+html-site/               # Production website
+├── index.html          # Main homepage
+├── css/                # Stylesheets
+│   └── styles.css     # All site styles
+├── js/                 # JavaScript files
+│   └── main.js        # Site functionality
+├── images/             # Image assets
+├── svgs/               # SVG icons
+├── videos/             # Video files
+└── *.html              # Policy pages
+```
 
 ### Asset Path Handling
 
-The HTML static site uses paths with the basePath prefix (e.g., `/FFC-IN-Single_Page_Template_HTML/favicon.ico`, `/FFC-IN-Single_Page_Template_HTML/images/logo.png`) which ensures assets load correctly when deployed to the GitHub Pages subpath.
+The HTML static site uses paths with the basePath prefix (e.g., `/FFC-IN-Single_Page_Template_HTML/favicon.ico`) which ensures assets load correctly when deployed to the GitHub Pages subpath.
 
 All HTML files have been pre-configured with the correct basePath for GitHub Pages deployment.
 
@@ -87,57 +57,32 @@ All HTML files have been pre-configured with the correct basePath for GitHub Pag
 
 ## Automated Deployment
 
-### GitHub Actions Workflows
+### GitHub Actions Workflow
 
-Deployment is fully automated through GitHub Actions with two sequential workflows:
+Deployment is automated through a single GitHub Actions workflow:
 
-1. **CI Workflow** (`.github/workflows/ci.yml`) - Runs on all PRs and pushes to main
-2. **Deploy Workflow** (`.github/workflows/deploy.yml`) - Runs after CI workflow completes successfully
+**Deploy Workflow** (`.github/workflows/deploy.yml`)
 
 #### Trigger Conditions
 
 The deployment workflow runs automatically when:
 
-1. **CI workflow completes successfully**: After the CI workflow finishes all tests on a push to `main` branch
-2. **Manual trigger**: Can be triggered manually from the Actions tab (bypasses CI wait)
+1. **Push to main branch**: Automatically when changes are pushed to `main`
+2. **Manual trigger**: From the Actions tab (workflow_dispatch)
 
-**Important**: The deployment workflow will only run if the CI workflow completed successfully. This ensures all tests pass before deploying to production.
-
-#### CI Workflow Steps (`.github/workflows/ci.yml`)
-
-Runs on all pull requests and pushes to main:
+#### Workflow Steps
 
 1. **Checkout code**: Retrieves the latest code from the repository
-2. **Setup Node.js**: Installs Node.js 20.x
-3. **Install dependencies**: Runs `npm ci` for a clean installation
-4. **Check formatting**: Runs Prettier format check
-5. **Run linting**: Executes ESLint to catch code issues
-6. **Run unit tests**: Executes Jest tests to verify code quality
-7. **Install Playwright**: Sets up E2E testing environment
-8. **Build Next.js site**: Runs `next build` to validate the source code compiles
-9. **Run E2E tests**: Validates the built site with Playwright tests
-
-**Note**: The Next.js build in CI is for testing purposes only. The build output is not deployed.
-
-#### Deploy Workflow Steps (`.github/workflows/deploy.yml`)
-
-Triggered automatically after the CI workflow completes successfully on push to the main branch:
-
-**Note**: The deploy workflow only runs if the CI workflow completed successfully. This is enforced by the `workflow_run` trigger and job-level conditional.
-
-The actual steps performed by the deploy workflow are:
-
-1. **Checkout code**: Retrieves the tested code from the repository
-2. **Setup Pages**: Configures GitHub Pages settings (no build parameters needed)
+2. **Setup Pages**: Configures GitHub Pages settings
 3. **Upload artifact**: Packages the `./html-site` directory
-4. **Deploy to GitHub Pages**: Publishes the HTML static site (separate job)
+4. **Deploy to GitHub Pages**: Publishes the HTML static site
 
-**Key difference from Next.js deployment:**
+**Key features:**
 
-- No Node.js setup required
 - No dependencies to install
-- No build step
+- No build step required
 - Direct upload of pre-built HTML files
+- Fast deployment (typically under 1 minute)
 
 ### Viewing Deployment Status
 
@@ -150,12 +95,11 @@ The actual steps performed by the deploy workflow are:
 
 ## Manual Deployment
 
-While automated deployment is recommended, you can also deploy manually if needed.
+While automated deployment is recommended, manual deployment is straightforward.
 
 ### Prerequisites
 
-- Node.js 20.x installed
-- GitHub CLI (`gh`) or GitHub Personal Access Token
+- Git installed
 - Write access to the repository
 
 ### Manual Deployment Steps
@@ -163,53 +107,42 @@ While automated deployment is recommended, you can also deploy manually if neede
 1. **Clone the repository** (if not already done):
 
    ```bash
-   git clone https://github.com/FreeForCharity/FFC_Single_Page_Template.git
-   cd FFC_Single_Page_Template
+   git clone https://github.com/FreeForCharity/FFC-IN-Single_Page_Template_HTML.git
+   cd FFC-IN-Single_Page_Template_HTML
    ```
 
-2. **Install dependencies**:
+2. **Make your changes** to files in the `html-site/` directory:
 
    ```bash
-   npm install
+   cd html-site
+   # Edit HTML, CSS, or JS files
    ```
 
-3. **Run tests** to ensure everything works:
+3. **Test locally** (optional but recommended):
 
    ```bash
-   npm run lint
-   npm test
-   npm run test:e2e
+   # Using Python (usually pre-installed)
+   python3 -m http.server 8000
+   # Visit http://localhost:8000
+
+   # Or using PHP
+   php -S localhost:8000
+
+   # Or using Node.js (if installed)
+   npx http-server -p 8000
    ```
 
-4. **Build the site** with the correct base path:
+4. **Commit and push** changes:
 
    ```bash
-   NEXT_PUBLIC_BASE_PATH=/FFC_Single_Page_Template npm run build
+   git add .
+   git commit -m "Your commit message"
+   git push origin main
    ```
 
-5. **Verify the build**:
-
-   ```bash
-   npm run preview
-   # Visit http://localhost:3000 to test
-   ```
-
-6. **Deploy to GitHub Pages** using the GitHub CLI:
-   ```bash
-   # This step requires appropriate permissions and setup
-   # Typically done through the GitHub Actions workflow
-   ```
-
-### Building for Custom Domain
-
-If deploying to a custom domain (no basePath needed):
-
-```bash
-npm run build
-npm run preview
-```
-
-The site will be built without a base path, making all assets available at the root.
+5. **Verify deployment**: 
+   - Check GitHub Actions for workflow status
+   - Visit the live site after deployment completes
 
 ---
 
@@ -217,16 +150,15 @@ The site will be built without a base path, making all assets available at the r
 
 ### GitHub Pages Configuration
 
-1. **Go to repository Settings** → **Pages**
-2. **Source**: Select "Deploy from a branch"
-3. **Branch**: Select `gh-pages` or the branch created by the workflow
-4. **Folder**: Select `/ (root)`
+1. Go to repository **Settings** → **Pages**
+2. **Source**: Should show "GitHub Actions" (configured automatically)
+3. **Custom domain**: Enter your domain (if applicable)
 
 ### Custom Domain Setup
 
-**Current Production Domain**: `ffcworkingsite2.org`
+If you want to use a custom domain:
 
-The site uses a custom domain with CNAME files in both directories:
+1. **Add CNAME file** to `html-site/` directory:
 
 1. **CNAME Files** - The domain is configured in two locations:
    - `html-site/CNAME` - **Production deployment** (deployed to GitHub Pages)
@@ -279,41 +211,34 @@ After configuring DNS:
 
 ### Build-Time Variables
 
-These variables are embedded during the build process:
+   Add an A record or CNAME record pointing to GitHub Pages:
 
-| Variable                         | Purpose                    | Default           | Required |
-| -------------------------------- | -------------------------- | ----------------- | -------- |
-| `NEXT_PUBLIC_BASE_PATH`          | Base path for GitHub Pages | (empty)           | No       |
-| `NEXT_PUBLIC_GA_MEASUREMENT_ID`  | Google Analytics ID        | `G-XXXXXXXXXX`    | No       |
-| `NEXT_PUBLIC_META_PIXEL_ID`      | Meta Pixel ID              | `XXXXXXXXXXXXXXX` | No       |
-| `NEXT_PUBLIC_CLARITY_PROJECT_ID` | Microsoft Clarity ID       | `XXXXXXXXXX`      | No       |
+   **For A records** (apex domain like `example.org`):
+   ```
+   185.199.108.153
+   185.199.109.153
+   185.199.110.153
+   185.199.111.153
+   ```
 
-### Setting Environment Variables in GitHub Actions
+   **For CNAME record** (subdomain like `www.example.org`):
+   ```
+   <username>.github.io
+   ```
 
-Environment variables are set in the workflow file:
+3. **Enable HTTPS** in GitHub Pages settings (recommended)
 
-```yaml
-- name: Build with Next.js
-  run: npm run build
-  env:
-    NEXT_PUBLIC_BASE_PATH: /FFC_Single_Page_Template
+4. **Wait for DNS propagation** (can take up to 24-48 hours)
+
+### Verify Custom Domain
+
+```bash
+# Check DNS propagation
+dig yourdomain.org
+
+# Check if site is accessible
+curl -I https://yourdomain.org
 ```
-
-### Local Development
-
-For local development, create a `.env.local` file:
-
-```env
-# Optional: Set basePath for testing GitHub Pages locally
-NEXT_PUBLIC_BASE_PATH=
-
-# Optional: Analytics IDs (only loaded with user consent)
-NEXT_PUBLIC_GA_MEASUREMENT_ID=
-NEXT_PUBLIC_META_PIXEL_ID=
-NEXT_PUBLIC_CLARITY_PROJECT_ID=
-```
-
-**Note**: Never commit `.env.local` or any file containing secrets to the repository.
 
 ---
 
@@ -321,103 +246,75 @@ NEXT_PUBLIC_CLARITY_PROJECT_ID=
 
 ### Common Issues
 
-#### Issue: Images Not Loading
+#### Issue: Images or Assets Not Loading
 
-**Symptoms**: Images return 404 errors or don't display
+**Symptoms**: Images show as broken links, CSS not applied
 
-**Causes**:
+**Cause**: Incorrect asset paths
 
-- Incorrect `NEXT_PUBLIC_BASE_PATH` setting
-- Not using the `assetPath()` helper function
-- Missing images in the `public` directory
+**Solution**:
+1. Verify all asset paths include the basePath: `/FFC-IN-Single_Page_Template_HTML/`
+2. Check browser console for 404 errors
+3. Ensure files exist in the `html-site/` directory
 
-**Solutions**:
+#### Issue: 404 Page Not Found
 
-1. Verify `NEXT_PUBLIC_BASE_PATH` is set correctly in the build environment
-2. Check that all image paths use `assetPath()`:
-   ```tsx
-   import { assetPath } from '@/lib/assetPath'
-   ;<img src={assetPath('/images/logo.png')} alt="Logo" />
-   ```
-3. Ensure images exist in the `public` directory
+**Symptoms**: Page shows 404 error
 
-#### Issue: Build Fails
+**Cause**: Incorrect URL or missing file
 
-**Symptoms**: GitHub Actions workflow fails during the build step
+**Solution**:
+1. Verify the file exists in `html-site/`
+2. Check that the URL includes the basePath prefix
+3. Ensure file names match exactly (case-sensitive)
 
-**Common Causes**:
+#### Issue: Changes Not Appearing
 
-- TypeScript errors
-- Linting errors
-- Missing dependencies
-- Test failures
+**Symptoms**: Deployed site shows old content
 
-**Solutions**:
+**Cause**: Browser cache or deployment delay
 
-1. Run locally to reproduce:
-   ```bash
-   npm run lint
-   npm test
-   npm run build
-   ```
-2. Fix any errors reported
-3. Commit and push fixes
-4. Verify the new workflow run succeeds
+**Solution**:
+1. Hard refresh browser (Ctrl+F5 or Cmd+Shift+R)
+2. Check GitHub Actions to verify deployment succeeded
+3. Clear browser cache
+4. Try incognito/private browsing mode
 
-#### Issue: 404 on Page Routes
+#### Issue: Deployment Failed
 
-**Symptoms**: Direct navigation to routes returns 404
+**Symptoms**: GitHub Actions workflow shows failure
 
-**Cause**: GitHub Pages doesn't support client-side routing by default
+**Cause**: Various potential issues
 
-**Solution**: Next.js static export handles this automatically. Ensure:
-
-1. `output: 'export'` is set in `next.config.ts`
-2. All pages are pre-rendered during build
-3. No dynamic routes are used (or they're pre-generated with `generateStaticParams`)
-
-#### Issue: Styles Not Applied
-
-**Symptoms**: Site displays with no styling
-
-**Causes**:
-
-- CSS build errors
-- Incorrect asset paths
-- Tailwind CSS configuration issues
-
-**Solutions**:
-
-1. Check build logs for CSS compilation errors
-2. Verify `postcss.config.mjs` and Tailwind config are correct
-3. Clear browser cache and hard refresh
-4. Check that CSS files are in the `./out` directory after build
+**Solution**:
+1. Check workflow logs in Actions tab
+2. Verify repository has GitHub Pages enabled
+3. Check repository permissions
+4. Ensure `html-site/` directory exists and contains files
 
 ### Deployment Logs
 
 To view detailed deployment logs:
 
-1. Go to **Actions** tab in GitHub
+1. Go to **Actions** tab
 2. Click on the failed workflow run
-3. Click on the job that failed (usually "build")
-4. Expand the failed step to see detailed logs
-5. Look for error messages and stack traces
+3. Click on the "Deploy to GitHub Pages" job
+4. Expand each step to see detailed logs
+5. Look for error messages or warnings
 
-### Testing Deployments Locally
+### Testing Locally
 
-To test the built site locally before deploying:
+Before pushing to production, test locally:
 
 ```bash
-# Build with GitHub Pages configuration
-NEXT_PUBLIC_BASE_PATH=/FFC_Single_Page_Template npm run build
+cd html-site
 
-# Serve the built site
-npm run preview
+# Start local server
+python3 -m http.server 8000
 
-# Open http://localhost:3000/FFC_Single_Page_Template in your browser
+# Visit http://localhost:8000 in your browser
+# Test all functionality and links
 ```
-
-This simulates how the site will behave on GitHub Pages.
 
 ---
 
@@ -430,76 +327,67 @@ If a deployment introduces issues, you can roll back:
 #### Method 1: Revert the Commit
 
 ```bash
-# Find the commit hash of the last good deployment
-git log
+# Find the commit to revert
+git log --oneline
 
-# Revert to the previous commit
+# Revert the problematic commit
 git revert <commit-hash>
 
-# Push to trigger a new deployment
+# Push the revert
 git push origin main
 ```
 
 #### Method 2: Re-deploy a Previous Version
 
 ```bash
-# Checkout the previous working commit
-git checkout <previous-commit-hash>
+# Reset to a previous commit
+git reset --hard <previous-commit-hash>
 
-# Create a new branch
-git checkout -b rollback/fix-deployment
-
-# Push and create a PR to main
-git push origin rollback/fix-deployment
+# Force push (use with caution)
+git push --force origin main
 ```
 
-#### Method 3: Redeploy from Actions
+**Warning**: Force push will rewrite history. Only use if necessary.
+
+#### Method 3: Manual Trigger from Actions
 
 1. Go to **Actions** tab
-2. Find a previous successful workflow run
-3. Click **"Re-run jobs"** → **"Re-run all jobs"**
-4. This will re-deploy the previous version
+2. Select "Deploy to GitHub Pages" workflow
+3. Click "Run workflow"
+4. Select the branch/commit to deploy
 
 ### Emergency Rollback
 
-For critical issues requiring immediate rollback:
+If the site is completely broken:
 
-1. **Disable GitHub Pages temporarily**:
-   - Go to Settings → Pages
-   - Set Source to "None"
-   - This takes the site offline while you fix the issue
-
-2. **Fix the issue** on a separate branch
-
-3. **Test thoroughly** before re-deploying
-
-4. **Re-enable GitHub Pages** once fixed
+1. Identify the last working commit from git history
+2. Create a new branch from that commit
+3. Update the deployment to use that branch temporarily
+4. Fix the issues on main branch
+5. Re-deploy main when fixed
 
 ---
 
 ## Deployment Checklist
 
-Before merging to main (which triggers deployment):
+Before deploying to production:
 
-- [ ] All tests pass locally (`npm test` and `npm run test:e2e`)
-- [ ] Linting passes (`npm run lint`)
-- [ ] Build succeeds (`npm run build`)
-- [ ] Manual testing completed on localhost
-- [ ] Screenshots taken for UI changes
-- [ ] Documentation updated
-- [ ] Code reviewed and approved
-- [ ] No sensitive data in code or commits
+- [ ] Test all changes locally
+- [ ] Verify all links work
+- [ ] Check that images and assets load correctly
+- [ ] Test on multiple browsers (Chrome, Firefox, Safari)
+- [ ] Test on mobile devices
+- [ ] Verify all policy pages are accessible
+- [ ] Check console for JavaScript errors
+- [ ] Ensure no broken links
+- [ ] Verify forms and interactive elements work
+- [ ] Test with and without custom domain (if applicable)
 
 ---
 
 ## Additional Resources
 
-- [Next.js Static Export Documentation](https://nextjs.org/docs/app/building-your-application/deploying/static-exports)
 - [GitHub Pages Documentation](https://docs.github.com/en/pages)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
-- [Repository README](./README.md)
-- [Testing Documentation](./TESTING.md)
-
----
-
-**Questions?** Open an issue or contact the maintainers at hello@freeforcharity.org
+- [Custom Domain Setup](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site)
+- [Troubleshooting GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/troubleshooting-404-errors-for-github-pages-sites)

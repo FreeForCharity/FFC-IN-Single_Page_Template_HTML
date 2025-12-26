@@ -39,8 +39,8 @@ function findChromiumExecutable(): string | undefined {
 }
 
 /**
- * Playwright configuration for Free For Charity web application
- * Tests run against the built static site served locally
+ * Playwright configuration for Free For Charity HTML static website
+ * Tests run against the HTML site served locally
  *
  * Performance Optimizations:
  * - Parallel execution enabled for faster test runs
@@ -61,8 +61,8 @@ export default defineConfig({
   reporter: 'html',
 
   use: {
-    // Base URL for tests
-    baseURL: 'http://localhost:3000',
+    // Base URL for tests (html-site served on port 8000)
+    baseURL: 'http://localhost:8000',
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',
   },
@@ -85,7 +85,7 @@ export default defineConfig({
   // Run local dev server before starting the tests
   webServer: {
     command: 'npm run preview',
-    url: 'http://localhost:3000',
+    url: 'http://localhost:8000',
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },

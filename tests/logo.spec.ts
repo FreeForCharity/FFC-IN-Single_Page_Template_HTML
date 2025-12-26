@@ -17,8 +17,8 @@ test.describe('Logo and Image Visibility', () => {
     await page.goto('/')
 
     // Find the logo in the Header
-    // The logo is in a Link element that points to "/" with img alt text
-    const headerLogo = page.locator(`header a[href="/"] img[alt="${testConfig.logo.headerAlt}"]`)
+    // The logo is in a Link element with img alt text
+    const headerLogo = page.locator(`header a img[alt="${testConfig.logo.headerAlt}"]`)
 
     // Verify the logo exists
     await expect(headerLogo).toBeVisible()
@@ -46,7 +46,7 @@ test.describe('Logo and Image Visibility', () => {
     await page.goto('/')
 
     // Find both images
-    const headerLogo = page.locator(`header a[href="/"] img[alt="${testConfig.logo.headerAlt}"]`)
+    const headerLogo = page.locator(`header a img[alt="${testConfig.logo.headerAlt}"]`)
     const heroImage = page.locator(`img[alt="${testConfig.logo.heroAlt}"]`)
 
     // Verify both are visible simultaneously

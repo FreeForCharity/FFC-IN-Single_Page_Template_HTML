@@ -19,7 +19,7 @@ test.describe('Image Loading', () => {
     await page.goto('/')
 
     // Find the logo images
-    const headerLogo = page.locator(`header a[href="/"] img[alt="${testConfig.logo.headerAlt}"]`)
+    const headerLogo = page.locator(`header a img[alt="${testConfig.logo.headerAlt}"]`)
     const heroImage = page.locator(`img[alt="${testConfig.logo.heroAlt}"]`)
 
     // Verify both images are visible (meaning they loaded successfully)
