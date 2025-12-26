@@ -506,13 +506,13 @@ h6 {
 
 @media (min-width: 640px) {
   .hero-title {
-    font-size: 45px;
+    font-size: 55px;
   }
 }
 
 @media (min-width: 768px) {
   .hero-title {
-    font-size: 50px;
+    font-size: 56px;
   }
 }
 
@@ -533,13 +533,13 @@ h6 {
 
 @media (min-width: 640px) {
   .hero-subtitle {
-    font-size: 22px;
+    font-size: 26px;
   }
 }
 
 @media (min-width: 768px) {
   .hero-subtitle {
-    font-size: 24px;
+    font-size: 28px;
   }
 }
 
