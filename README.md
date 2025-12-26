@@ -42,6 +42,13 @@ html-site/                      # Production website (deployed to GitHub Pages)
 ├── vulnerability-disclosure-policy.html
 ├── security-acknowledgements.html
 └── *.png, *.ico, *.webmanifest # Icons and manifest files
+
+tests/                         # Playwright E2E tests for HTML site
+├── *.spec.ts                 # Test files
+└── README.md                  # Testing documentation
+
+docs-backup/                   # Archived documentation from React/Next.js version
+└── *.md                       # Historical reference files
 ```
 
 ---
@@ -122,6 +129,37 @@ php -S localhost:8000
 # Or using Node.js http-server (if you have Node installed)
 npx http-server html-site -p 8000
 ```
+
+---
+
+## Testing
+
+The repository includes Playwright E2E tests to validate HTML site functionality:
+
+```bash
+# Install dependencies (first time only)
+npm install
+
+# Run all tests
+npm test
+
+# Run tests with UI
+npm run test:ui
+
+# Run tests in headed mode (see browser)
+npm run test:headed
+```
+
+Tests validate:
+- Page loading and navigation
+- Image rendering
+- Cookie consent functionality
+- Form functionality
+- Social media links
+- Copyright information
+- Mobile responsiveness
+
+See [tests/README.md](./tests/README.md) for detailed testing documentation.
 
 ---
 
