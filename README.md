@@ -110,7 +110,7 @@ The site is automatically deployed to the custom apex domain when changes are pu
 
 **Contingency Plan**:
 If the custom domain becomes unavailable and the site needs to work on the GitHub Pages URL, you must:
-1. Restore the basePath prefix to all asset paths (revert to commit `a7c5555`)
+1. Restore the basePath prefix to all asset paths (revert to the commit before basePath removal, or manually add the prefix)
 2. Update all `/css/` → `/FFC-IN-Single_Page_Template_HTML/css/`
 3. Update all `/images/` → `/FFC-IN-Single_Page_Template_HTML/images/`
 4. Update all navigation `/#section` → `/FFC-IN-Single_Page_Template_HTML/#section`
