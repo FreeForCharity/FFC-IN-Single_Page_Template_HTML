@@ -6,7 +6,7 @@ This repository contains the **Free For Charity** website built with pure HTML, 
 
 ### Quick Links
 
-- 🌐 **[Live Site](https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/)** - Production website
+- 🌐 **[Live Site](https://ffcworkingsite2.org/)** - Production website
 - 📂 **[HTML Site Files](./html-site/)** - All website files
 - 🔄 **[Conversion History](./HTML_CONVERSION_SUMMARY.md)** - Documentation of React to HTML conversion
 
@@ -87,10 +87,11 @@ All legal and policy information is available on separate pages:
 
 ## Deployment
 
-The site is automatically deployed to GitHub Pages when changes are pushed to the `main` branch.
+The site is automatically deployed to the custom apex domain when changes are pushed to the `main` branch.
 
-- **Production URL**: https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
-- **Deployment**: Via GitHub Actions (`.github/workflows/deploy.yml`)
+- **Production URL**: https://ffcworkingsite2.org/
+- **Deployment**: Via GitHub Actions (`.github/workflows/deploy.yml`) to GitHub Pages with custom domain
+- **Custom Domain**: Configured via `CNAME` file in `html-site/` directory
 - **No Build Step**: Pure HTML files are served directly from the `html-site/` directory
 
 ---
