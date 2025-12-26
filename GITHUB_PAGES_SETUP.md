@@ -1,5 +1,19 @@
 # GitHub Pages Configuration Required
 
+## ⚠️ QUICK FIX SUMMARY
+
+**The site shows README because GitHub Pages is set to deploy from main branch instead of using GitHub Actions.**
+
+**To fix:**
+1. Go to: https://github.com/FreeForCharity/FFC-IN-Single_Page_Template_HTML/settings/pages
+2. Change "Source" dropdown from "Deploy from a branch" to **"GitHub Actions"**
+3. Click Actions tab → "Deploy to GitHub Pages" → "Run workflow" → "Run workflow" button
+4. Wait 2 minutes and refresh the site
+
+That's it! Detailed instructions below.
+
+---
+
 ## Issue
 
 The site is currently rendering the README.md instead of the HTML site because GitHub Pages is not properly configured to use GitHub Actions as the deployment source.
@@ -30,6 +44,11 @@ You need to update the GitHub Pages settings in the repository to use GitHub Act
 6. The page will auto-save (no Save button needed)
 
 7. Wait 1-2 minutes for the next deployment to complete
+
+8. **Trigger a deployment** (choose one option):
+   - **Option A (Recommended)**: Go to Actions tab → "Deploy to GitHub Pages" → "Run workflow" → Select "main" branch → Click "Run workflow"
+   - **Option B**: Wait for the next automatic deployment (happens when CI completes on a push to main)
+   - **Option C**: Make any commit to main branch to trigger CI + Deploy
 
 ### What This Does:
 
