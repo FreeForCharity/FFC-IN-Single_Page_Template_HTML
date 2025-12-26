@@ -110,7 +110,7 @@ export const testConfig = {
    * Used in: tests/logo.spec.ts
    */
   logo: {
-    headerAlt: 'Free For Charity',
+    headerAlt: 'Free For Charity Logo',
     heroAlt: 'Hero image',
     navBarAriaLabel: 'Free For Charity home',
   },
