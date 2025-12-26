@@ -38,14 +38,10 @@ jobs:
         uses: actions/upload-pages-artifact@v4
         with:
           # Deploy the pre-built HTML static site from html-site directory.
-          # This is the production deployment as specified by project requirements.
           #
           # Asset paths use the basePath /FFC-IN-Single_Page_Template_HTML/ for GitHub Pages subpath deployment.
           # All HTML files have been updated with the correct basePath to ensure assets load properly at:
           # https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
-          #
-          # The CI workflow still builds and tests the Next.js version for development validation,
-          # but this deploy workflow uses the pre-built HTML for production.
           path: ./html-site
 
   deploy:
