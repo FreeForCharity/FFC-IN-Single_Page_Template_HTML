@@ -160,11 +160,56 @@ If you want to use a custom domain:
 
 1. **Add CNAME file** to `html-site/` directory:
 
-   ```bash
-   echo "yourdomain.org" > html-site/CNAME
+1. **CNAME Files** - The domain is configured in two locations:
+   - `html-site/CNAME` - **Production deployment** (deployed to GitHub Pages)
+   - `public/CNAME` - Development reference (for Next.js builds, not deployed)
+
+   Both files should contain:
+
+   ```
+   ffcworkingsite2.org
    ```
 
-2. **Configure DNS** with your domain provider:
+2. **Configure DNS records** at your domain provider:
+
+   For apex domain (ffcworkingsite2.org):
+   - **Type**: A or ALIAS (depending on DNS provider)
+   - **Name**: @ (root domain)
+   - **Value**: GitHub Pages IP addresses:
+     - 185.199.108.153
+     - 185.199.109.153
+     - 185.199.110.153
+     - 185.199.111.153
+
+   For www subdomain (optional):
+   - **Type**: CNAME
+   - **Name**: www
+   - **Value**: freeforcharity.github.io
+
+3. **GitHub Pages Settings**:
+   - Navigate to repository Settings → Pages
+   - Custom domain should show: `ffcworkingsite2.org`
+   - HTTPS should be automatically enabled
+
+4. **Important Notes**:
+   - The `html-site/CNAME` file is critical for deployment
+   - Without this file, GitHub Pages loses custom domain configuration on each deployment
+   - The deployment workflow deploys `html-site/` directory, not `public/`
+   - Custom domain works independently of the basePath configuration
+
+### DNS Propagation
+
+After configuring DNS:
+
+- Changes can take 24-48 hours to propagate
+- Use `dig` or online DNS tools to verify propagation
+- Clear browser cache when testing
+
+---
+
+## Environment Variables
+
+### Build-Time Variables
 
    Add an A record or CNAME record pointing to GitHub Pages:
 
