@@ -19,7 +19,8 @@ This document explains how the Free For Charity website is deployed to GitHub Pa
 
 The Free For Charity website is deployed to GitHub Pages as a static HTML site. The site is accessible at:
 
-- **GitHub Pages URL**: https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
+- **Custom Domain**: https://ffcworkingsite2.org/ (Primary)
+- **GitHub Pages URL**: https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/ (Fallback)
 
 ### Technology Stack
 
@@ -223,24 +224,34 @@ The site will be built without a base path, making all assets available at the r
 
 ### Custom Domain Setup
 
-If using a custom domain:
+**Current Production Domain**: `ffcworkingsite2.org`
 
-1. **Add a CNAME file** to the `public` directory with your domain:
+The site uses a custom domain with CNAME files in both directories:
 
+1. **CNAME Files** - The domain is configured in two locations:
+   - `html-site/CNAME` - **Production deployment** (deployed to GitHub Pages)
+   - `public/CNAME` - Development reference (for Next.js builds, not deployed)
+
+   Both files should contain:
    ```
-   ffcworkingsite1.org
+   ffcworkingsite2.org
    ```
 
 2. **Configure DNS records** at your domain provider:
    - **Type**: CNAME
-   - **Name**: www (or @)
+   - **Name**: @ (or www)
    - **Value**: freeforcharity.github.io
 
-3. **Enable HTTPS** in GitHub Pages settings (automatic with custom domain)
+3. **GitHub Pages Settings**:
+   - Navigate to repository Settings → Pages
+   - Custom domain should show: `ffcworkingsite2.org`
+   - HTTPS should be automatically enabled
 
-4. **Update environment variables** if needed:
-   - Remove or leave empty `NEXT_PUBLIC_BASE_PATH` for custom domains
-   - GitHub Actions should detect custom domain and adjust automatically
+4. **Important Notes**:
+   - The `html-site/CNAME` file is critical for deployment
+   - Without this file, GitHub Pages loses custom domain configuration on each deployment
+   - The deployment workflow deploys `html-site/` directory, not `public/`
+   - Custom domain works independently of the basePath configuration
 
 ### DNS Propagation
 
