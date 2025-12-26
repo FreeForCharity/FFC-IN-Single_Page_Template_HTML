@@ -238,8 +238,19 @@ The site uses a custom domain with CNAME files in both directories:
    ```
 
 2. **Configure DNS records** at your domain provider:
+   
+   For apex domain (ffcworkingsite2.org):
+   - **Type**: A or ALIAS (depending on DNS provider)
+   - **Name**: @ (root domain)
+   - **Value**: GitHub Pages IP addresses:
+     - 185.199.108.153
+     - 185.199.109.153
+     - 185.199.110.153
+     - 185.199.111.153
+   
+   For www subdomain (optional):
    - **Type**: CNAME
-   - **Name**: @ (or www)
+   - **Name**: www
    - **Value**: freeforcharity.github.io
 
 3. **GitHub Pages Settings**:
