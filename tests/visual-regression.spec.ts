@@ -104,7 +104,6 @@ test.describe('Visual Regression - Responsive Breakpoints', () => {
     
     // Test mobile navigation (< 1024px)
     await page.setViewportSize({ width: 1023, height: 800 });
-    await page.waitForTimeout(100); // Allow CSS to apply
     
     const mobileToggle = page.locator('.mobile-menu-toggle');
     await expect(mobileToggle).toBeVisible();
@@ -115,7 +114,6 @@ test.describe('Visual Regression - Responsive Breakpoints', () => {
     
     // Test desktop navigation (>= 1024px)
     await page.setViewportSize({ width: 1024, height: 800 });
-    await page.waitForTimeout(100);
     
     const desktopNav = page.locator('.desktop-nav');
     await expect(desktopNav).toBeVisible();
@@ -130,10 +128,10 @@ test.describe('Visual Regression - Responsive Breakpoints', () => {
     
     // Below md breakpoint - should be 1 column
     await page.setViewportSize({ width: 767, height: 1000 });
-    await page.waitForTimeout(100);
     
     const programsGrid767 = page.locator('.programs-grid').first();
     await programsGrid767.scrollIntoViewIfNeeded();
+    await expect(programsGrid767).toBeVisible();
     
     await expect(programsGrid767).toHaveScreenshot('programs-grid-767px.png', {
       maxDiffPixels: 100,
@@ -141,10 +139,10 @@ test.describe('Visual Regression - Responsive Breakpoints', () => {
     
     // At md breakpoint - should be 2 columns
     await page.setViewportSize({ width: 768, height: 1000 });
-    await page.waitForTimeout(100);
     
     const programsGrid768 = page.locator('.programs-grid').first();
     await programsGrid768.scrollIntoViewIfNeeded();
+    await expect(programsGrid768).toBeVisible();
     
     await expect(programsGrid768).toHaveScreenshot('programs-grid-768px.png', {
       maxDiffPixels: 100,

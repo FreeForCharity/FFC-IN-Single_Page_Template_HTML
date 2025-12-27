@@ -26,22 +26,59 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # Check that all required workflows passed before deploying
-  check-workflows:
-    name: Verify Test & CodeQL Status
+  # Verify that BOTH required workflows (Test and CodeQL) have succeeded
+  # This job uses GitHub API to check the status of both workflows before allowing deployment
+  verify-workflows:
+    name: Verify All Workflows Passed
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'
+    if: github.event_name != 'workflow_dispatch'
+    outputs:
+      all_passed: ${{ steps.check.outputs.all_passed }}
+    
     steps:
-      - name: Manual deployment - skipping workflow checks
-        run: echo "Manual deployment triggered - proceeding without workflow checks"
+      - name: Check workflow statuses
+        id: check
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const ref = context.payload.workflow_run.head_sha;
+            const requiredWorkflows = ['Test & Visual Regression', 'CodeQL Advanced'];
+            
+            // Get all workflow runs for this commit
+            const { data: runs } = await github.rest.actions.listWorkflowRunsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              head_sha: ref,
+              per_page: 100
+            });
+            
+            // Check if all required workflows succeeded
+            const workflowStatuses = {};
+            for (const run of runs.workflow_runs) {
+              if (requiredWorkflows.includes(run.name)) {
+                workflowStatuses[run.name] = run.conclusion;
+              }
+            }
+            
+            console.log('Workflow statuses:', workflowStatuses);
+            
+            // Verify all required workflows succeeded
+            const allPassed = requiredWorkflows.every(name => 
+              workflowStatuses[name] === 'success'
+            );
+            
+            core.setOutput('all_passed', allPassed);
+            
+            if (!allPassed) {
+              core.setFailed('Not all required workflows have passed');
+            }
     
   build:
     name: Build for GitHub Pages
     runs-on: ubuntu-latest
-    # Only run if all required workflows succeeded (when triggered by workflow_run) or if manually triggered
-    # For workflow_run events, this job runs once per completed workflow
-    # We check that the triggering workflow succeeded
-    if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run && github.event.workflow_run.conclusion == 'success')
+    needs: verify-workflows
+    # Only run if all workflows passed or if manually triggered
+    if: github.event_name == 'workflow_dispatch' || needs.verify-workflows.outputs.all_passed == 'true'
 
     steps:
       - name: Checkout repository
