@@ -1,11 +1,14 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Runs on pushes to main branch
-  push:
+  # Runs after CodeQL workflow completes successfully on push to main
+  workflow_run:
+    workflows: ["CodeQL Advanced"]
+    types:
+      - completed
     branches: ['main']
 
-  # Allows manual deployment from Actions tab
+  # Allows manual deployment from Actions tab (bypasses CodeQL check)
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -24,6 +27,8 @@ jobs:
   build:
     name: Build for GitHub Pages
     runs-on: ubuntu-latest
+    # Only run if CodeQL succeeded (when triggered by workflow_run) or if manually triggered
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
 
     steps:
       - name: Checkout repository
