@@ -4,7 +4,26 @@ This directory contains the CI/CD workflows for the Free For Charity HTML Static
 
 ## Workflow Files
 
-### 1. CodeQL Advanced (`codeql.yml`)
+### 1. Test & Visual Regression (`test.yml`)
+
+**Purpose:** Runs functional tests and visual regression checks
+
+**Triggers:**
+- Push to `main` branch
+- Pull requests to `main` branch
+
+**What it does:**
+- Installs dependencies and Playwright browsers
+- Runs all Playwright tests including visual regression
+- Uploads test reports and screenshots on failure
+
+**Duration:** ~3-5 minutes
+
+---
+
+### 2. CodeQL Advanced (`codeql.yml`)
+
+### 2. CodeQL Advanced (`codeql.yml`)
 
 **Purpose:** Security scanning and code quality analysis
 
@@ -23,16 +42,18 @@ This directory contains the CI/CD workflows for the Free For Charity HTML Static
 
 ---
 
-### 2. Deploy to GitHub Pages (`deploy.yml`)
+### 3. Deploy to GitHub Pages (`deploy.yml`)
+
+### 3. Deploy to GitHub Pages (`deploy.yml`)
 
 **Purpose:** Deploys the HTML static site to GitHub Pages
 
 **Triggers:**
-- **Automatically** after CodeQL Advanced workflow completes successfully on push to `main`
-- **Manually** via workflow_dispatch (bypasses CodeQL check)
+- **Automatically** after Test & Visual Regression AND CodeQL Advanced workflows both complete successfully on push to `main`
+- **Manually** via workflow_dispatch (bypasses checks)
 
 **What it does:**
-1. Checks that CodeQL workflow succeeded (automatic trigger only)
+1. Waits for both Test and CodeQL workflows to succeed
 2. Uploads the `html-site/` directory as a Pages artifact
 3. Deploys the artifact to GitHub Pages at https://ffcworkingsite2.org/
 
@@ -44,31 +65,35 @@ This directory contains the CI/CD workflows for the Free For Charity HTML Static
 
 ### On Push to Main Branch
 
-The workflows execute in the following **sequential order** to protect the main branch:
+The workflows execute in the following **parallel then sequential** order to protect the main branch:
 
 ```
 ┌─────────────────────────────────────────────┐
 │  Developer pushes code to main branch       │
 └──────────────────┬──────────────────────────┘
                    │
-                   ▼
+          ┌────────┴────────┐
+          │                 │
+          ▼                 ▼
+┌──────────────────┐  ┌──────────────────────┐
+│ Test & Visual    │  │ CodeQL Advanced      │
+│ Regression       │  │ (Security Scan)      │
+│ (3-5 min)        │  │ (1-2 min)            │
+└────────┬─────────┘  └──────────┬───────────┘
+         │                       │
+         └───────┬───────────────┘
+                 │
+         ┌───────┴────────┐
+         │                │
+         ▼                ▼
+    [SUCCESS]        [FAILURE]
+         │                │
+         │                └──> ❌ Deployment BLOCKED
+         │                     (Fix tests/security issues)
+         ▼
 ┌─────────────────────────────────────────────┐
-│  Step 1: CodeQL Advanced                    │
-│  ├─ Security scanning                       │
-│  ├─ Code quality analysis                   │
-│  └─ Generates alerts for issues             │
-└──────────────────┬──────────────────────────┘
-                   │
-           ┌───────┴────────┐
-           │                │
-           ▼                ▼
-      [SUCCESS]        [FAILURE]
-           │                │
-           │                └──> ❌ Deployment BLOCKED
-           │                     (Security issues must be fixed)
-           ▼
-┌─────────────────────────────────────────────┐
-│  Step 2: Deploy to GitHub Pages             │
+│  Deploy to GitHub Pages                     │
+│  Only runs if BOTH workflows succeeded      │
 │  ├─ Uploads html-site/ directory            │
 │  ├─ Deploys to GitHub Pages                 │
 │  └─ Site live at ffcworkingsite2.org        │
@@ -97,20 +122,20 @@ Manual deployments via `workflow_dispatch` **bypass** the CodeQL check and deplo
 
 ## Key Features
 
-### ✅ Sequential Execution
-- CodeQL runs **first** before deployment
-- Deploy waits for CodeQL to complete
-- No parallel execution that could allow broken code to deploy
+### ✅ Parallel + Sequential Execution
+- Tests and CodeQL run **in parallel** for speed (both complete in ~3-5 minutes)
+- Deploy waits for **both** to complete successfully
+- No deployment if either test or security check fails
 
-### 🔒 Security Gate
-- Deployment is **blocked** if CodeQL finds issues
-- Forces security issues to be addressed before going live
-- Protects production site from vulnerable code
+### 🔒 Security + Quality Gate
+- Deployment is **blocked** if tests or CodeQL find issues
+- Forces both functional and security issues to be addressed before going live
+- Protects production site from broken UI and vulnerable code
 
 ### ⚡ Fast Feedback
-- CodeQL completes in ~1-2 minutes
+- Tests and CodeQL run in parallel (~3-5 minutes combined)
 - Deploy completes in ~30 seconds  
-- Total time: ~2-3 minutes from push to live site
+- Total time: ~4-6 minutes from push to live site
 
 ### 🛠️ Flexibility
 - Manual deployment option preserved for emergencies

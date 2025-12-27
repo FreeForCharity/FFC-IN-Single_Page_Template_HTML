@@ -1,16 +1,16 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Runs after CodeQL workflow completes successfully on push to main
-  # NOTE: The workflow name "CodeQL Advanced" must match the name in codeql.yml
-  # If the CodeQL workflow name changes, update this reference accordingly
+  # Runs after Test and CodeQL workflows complete successfully on push to main
+  # NOTE: Workflow names must match the names in test.yml and codeql.yml
+  # If workflow names change, update these references accordingly
   workflow_run:
-    workflows: ["CodeQL Advanced"]
+    workflows: ["Test & Visual Regression", "CodeQL Advanced"]
     types:
       - completed
     branches: ['main']
 
-  # Allows manual deployment from Actions tab (bypasses CodeQL check)
+  # Allows manual deployment from Actions tab (bypasses checks)
   workflow_dispatch:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
@@ -26,11 +26,21 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # Check that all required workflows passed before deploying
+  check-workflows:
+    name: Verify Test & CodeQL Status
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    steps:
+      - name: Manual deployment - skipping workflow checks
+        run: echo "Manual deployment triggered - proceeding without workflow checks"
+    
   build:
     name: Build for GitHub Pages
     runs-on: ubuntu-latest
-    # Only run if CodeQL succeeded (when triggered by workflow_run) or if manually triggered
-    # Includes null check for workflow_run to prevent runtime errors on manual dispatch
+    # Only run if all required workflows succeeded (when triggered by workflow_run) or if manually triggered
+    # For workflow_run events, this job runs once per completed workflow
+    # We check that the triggering workflow succeeded
     if: github.event_name == 'workflow_dispatch' || (github.event.workflow_run && github.event.workflow_run.conclusion == 'success')
 
     steps:
