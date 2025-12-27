@@ -5,14 +5,15 @@
 :root {
   /* Colors */
   --color-primary: #2e6f8e;
-  --color-secondary: #f57c20;
+  --color-secondary: #d96a15; /* Darkened from #f57c20 for better contrast with white text */
   --color-accent: #113563;
   --color-white: #ffffff;
   --color-black: #000000;
-  --color-gray: #666666;
+  --color-gray: #4a4a4a; /* Darkened from #666666 for better contrast */
   --color-light-gray: #f5f5f5;
   --color-border: #2b627b;
-  --color-link: #2ea3f2;
+  --color-link: #0066a1; /* Darkened for 4.5:1 contrast on light backgrounds */
+  --color-link-on-dark: #66b3ff; /* Light blue for dark backgrounds with 4.5:1 contrast */
 
   /* Fonts */
   --font-open-sans: 'Open Sans', sans-serif;
@@ -1283,8 +1284,8 @@ h6 {
   justify-content: space-between;
   max-width: 230px;
   padding: 12px 20px;
-  border: 2px solid var(--color-link);
-  color: var(--color-link);
+  border: 2px solid var(--color-link-on-dark);
+  color: var(--color-link-on-dark);
   font-family: var(--font-lato);
   font-size: 18px;
   font-weight: 500;
@@ -1292,8 +1293,8 @@ h6 {
 }
 
 .guidestar-link:hover {
-  background-color: var(--color-link);
-  color: var(--color-white);
+  background-color: var(--color-link-on-dark);
+  color: var(--color-black);
 }
 
 .guidestar-link .arrow {
@@ -1801,7 +1802,7 @@ h6 {
   font-size: 14px;
   font-weight: 500;
   margin: 10px 0;
-  color: #666;
+  color: #1a1a1a !important; /* Very dark gray for maximum contrast - WCAG AA compliant */
   text-align: center;
 }
 
@@ -1809,14 +1810,14 @@ h6 {
   display: block;
   font-size: 14px;
   font-weight: 500;
-  color: #2ea3f2;
+  color: #004080 !important; /* Dark blue for maximum contrast on light backgrounds */
   text-align: center;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .testimonial-location:hover {
-  color: #1e7ec0;
+  color: #002b59 !important; /* Even darker on hover */
   text-decoration: underline;
 }
 
