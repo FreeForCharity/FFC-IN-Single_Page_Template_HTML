@@ -46,6 +46,8 @@ test.describe('Responsive Layout Comparison', () => {
       
       // Get the computed grid-template-columns value
       const resultsGrid = page.locator('.results-grid').first();
+      await expect(resultsGrid).toBeVisible(); // Ensure element exists
+      
       const gridColumns = await resultsGrid.evaluate((el) => {
         const style = window.getComputedStyle(el);
         const templateColumns = style.gridTemplateColumns;
@@ -92,6 +94,8 @@ test.describe('Responsive Layout Comparison', () => {
       await page.waitForTimeout(100);
       
       const programsGrid = page.locator('.programs-grid').first();
+      await expect(programsGrid).toBeVisible(); // Ensure element exists
+      
       const gridColumns = await programsGrid.evaluate((el) => {
         const style = window.getComputedStyle(el);
         const templateColumns = style.gridTemplateColumns;
@@ -133,6 +137,8 @@ test.describe('Responsive Layout Comparison', () => {
       await page.waitForTimeout(100);
       
       const teamGrid = page.locator('.team-grid').first();
+      await expect(teamGrid).toBeVisible(); // Ensure element exists
+      
       const gridColumns = await teamGrid.evaluate((el) => {
         const style = window.getComputedStyle(el);
         const templateColumns = style.gridTemplateColumns;
