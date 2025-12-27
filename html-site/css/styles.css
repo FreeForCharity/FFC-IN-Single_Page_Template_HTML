@@ -690,10 +690,10 @@ h6 {
   margin-top: 50px;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .results-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 35px;
+    gap: 40px;
   }
 }
 
@@ -748,12 +748,6 @@ h6 {
 @media (min-width: 768px) {
   .result-label {
     font-size: 25px;
-  }
-}
-
-@media (min-width: 768px) {
-  .results-grid {
-    gap: 40px;
   }
 }
 
@@ -997,10 +991,10 @@ h6 {
   margin-top: 50px;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 768px) {
   .programs-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 35px;
+    gap: 40px;
   }
 }
 
@@ -1054,12 +1048,6 @@ h6 {
   font-size: 16px;
   line-height: 1.6;
   color: var(--color-gray);
-}
-
-@media (min-width: 768px) {
-  .programs-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
 }
 
 /* ===========================
@@ -1144,15 +1132,9 @@ h6 {
   margin-top: 50px;
 }
 
-@media (min-width: 640px) {
-  .team-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 35px;
-  }
-}
-
 @media (min-width: 768px) {
   .team-grid {
+    grid-template-columns: repeat(2, 1fr);
     gap: 40px;
   }
 }
