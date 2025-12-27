@@ -279,15 +279,14 @@ h6 {
 }
 
 .logo img {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
+  height: 45px;
+  width: auto;
 }
 
 @media (min-width: 768px) {
   .logo img {
-    width: 70px;
-    height: 70px;
+    height: 50px;
+    width: auto;
   }
 }
 
