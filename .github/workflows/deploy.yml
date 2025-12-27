@@ -39,9 +39,9 @@ jobs:
         with:
           # Deploy the pre-built HTML static site from html-site directory.
           #
-          # Asset paths use the basePath /FFC-IN-Single_Page_Template_HTML/ for GitHub Pages subpath deployment.
-          # All HTML files have been updated with the correct basePath to ensure assets load properly at:
-          # https://freeforcharity.github.io/FFC-IN-Single_Page_Template_HTML/
+          # Asset paths use root-relative paths (e.g., /css/styles.css) for deployment
+          # to the custom apex domain (https://ffcworkingsite2.org/) via CNAME.
+          # The CNAME file in html-site/ configures GitHub Pages to serve at the custom domain root.
           path: ./html-site
 
   deploy:
