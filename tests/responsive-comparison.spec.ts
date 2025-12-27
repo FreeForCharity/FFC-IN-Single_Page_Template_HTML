@@ -9,15 +9,6 @@ import { test, expect } from '@playwright/test';
 
 const baseURL = 'http://localhost:8000';
 
-// Breakpoints from Next.js/React Tailwind CSS
-const TAILWIND_BREAKPOINTS = {
-  sm: 640,
-  md: 768,
-  lg: 1024,
-  xl: 1280,
-  '2xl': 1536,
-};
-
 // Test viewport sizes covering key breakpoint transitions
 const VIEWPORTS = {
   mobile: { width: 375, height: 667, name: 'Mobile (iPhone SE)' },
@@ -77,10 +68,10 @@ test.describe('Responsive Layout Comparison', () => {
     const xl = results.find(r => r.width === 1280);
     
     expect(mobile?.columns).toBe(1); // Mobile: 1 column
-    expect(sm?.columns).toBe(1);     // Both: 1 column (aligned with React)
-    expect(md?.columns).toBe(2);     // Both: 2 columns
-    expect(lg?.columns).toBe(3);     // Both: 3 columns
-    expect(xl?.columns).toBe(4);     // Both: 4 columns
+    expect(sm?.columns).toBe(1);     // Small: 1 column
+    expect(md?.columns).toBe(2);     // Medium: 2 columns
+    expect(lg?.columns).toBe(3);     // Large: 3 columns
+    expect(xl?.columns).toBe(4);     // Extra large: 4 columns
   });
   
   test('Programs Section - Grid Column Count at Different Breakpoints', async ({ page }) => {
@@ -121,9 +112,9 @@ test.describe('Responsive Layout Comparison', () => {
     const lg = results.find(r => r.width === 1024);
     
     expect(mobile?.columns).toBe(1); // Mobile: 1 column
-    expect(sm?.columns).toBe(1);     // Both: 1 column (aligned with React)
-    expect(md?.columns).toBe(2);     // Both: 2 columns (aligned with React)
-    expect(lg?.columns).toBe(3);     // Both: 3 columns
+    expect(sm?.columns).toBe(1);     // Small: 1 column
+    expect(md?.columns).toBe(2);     // Medium: 2 columns
+    expect(lg?.columns).toBe(3);     // Large: 3 columns
   });
   
   test('Team Section - Grid Column Count at Different Breakpoints', async ({ page }) => {
@@ -164,9 +155,9 @@ test.describe('Responsive Layout Comparison', () => {
     const lg = results.find(r => r.width === 1024);
     
     expect(mobile?.columns).toBe(1); // Mobile: 1 column
-    expect(sm?.columns).toBe(1);     // Both: 1 column (aligned with React)
-    expect(md?.columns).toBe(2);     // HTML: 2 columns (React: would be 2 here)
-    expect(lg?.columns).toBe(3);     // Both: 3 columns
+    expect(sm?.columns).toBe(1);     // Small: 1 column
+    expect(md?.columns).toBe(2);     // Medium: 2 columns
+    expect(lg?.columns).toBe(3);     // Large: 3 columns
   });
   
   test('Navigation - Desktop Nav Visibility at Different Breakpoints', async ({ page }) => {
