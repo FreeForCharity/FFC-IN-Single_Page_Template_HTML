@@ -1,14 +1,16 @@
 # Mobile Responsive Differences - Quick Reference Guide
 
+> **⚠️ HISTORICAL DOCUMENT**: This document describes the responsive layout differences that existed **before** the CSS fixes were implemented in this PR. All ❌ grid layout differences listed below have been **resolved**. The breakpoints have been updated from 640px to 768px to align with the React version.
+
 This document provides a quick reference for the identified differences between the HTML static site (ffcworkingsite2.org) and the Next.js/React site (ffcworkingsite1.org).
 
 ## TL;DR - Key Differences
 
-| Area | HTML Version | React Version | Difference | Impact |
-|------|-------------|---------------|------------|---------|
-| **Grid Layouts** | 2 columns at 640px | 2 columns at 768px | 128px earlier | Minor - wider phones show 2 cols |
-| **Navigation** | Desktop nav at 1024px | Desktop nav at 768px | 256px later | Medium - tablets see mobile menu |
-| **Programs Grid** | 3 cols at 768px (bug) | 2 cols at 768px | Duplicate CSS | Minor - quick to fix |
+| Area | HTML Version (OLD) | HTML Version (FIXED) | React Version | Status |
+|------|-------------------|---------------------|---------------|--------|
+| **Grid Layouts** | ~~2 columns at 640px~~ | **2 columns at 768px** | 2 columns at 768px | ✅ FIXED |
+| **Navigation** | Desktop nav at 1024px | Desktop nav at 1024px | Desktop nav at 768px | ⚠️ Different (not addressed in this PR) |
+| **Programs Grid** | ~~3 cols at 768px (bug)~~ | **2 cols at 768px** | 2 cols at 768px | ✅ FIXED |
 
 ## Visual Breakpoint Comparison
 

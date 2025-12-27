@@ -1,5 +1,7 @@
 # Mobile Responsive Layout Differences Analysis
 
+> **⚠️ HISTORICAL DOCUMENT**: This document describes the responsive layout differences that existed **before** the CSS fixes were implemented in this PR. The grid breakpoints have now been updated from 640px to 768px to align with the React version. See the PR description and commit history for current status. Grid layouts are now **identical** between HTML and React versions.
+
 **Date**: December 27, 2024  
 **Issue**: #35 - Mobile responsive layouts differences  
 **Comparison**: ffcworkingsite1.org (Next.js/React) vs ffcworkingsite2.org (HTML static)

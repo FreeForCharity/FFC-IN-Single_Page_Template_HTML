@@ -1,9 +1,8 @@
 /**
  * Responsive Layout Comparison Tests
  * 
- * This test suite validates the responsive breakpoints and layout behavior
- * to identify differences between the HTML implementation and the expected
- * Next.js/React Tailwind CSS behavior.
+ * This test suite validates that the responsive breakpoints and layout behavior
+ * of the HTML implementation match the Next.js/React Tailwind CSS implementation.
  */
 
 import { test, expect } from '@playwright/test';
@@ -40,7 +39,7 @@ test.describe('Responsive Layout Comparison', () => {
     const results: Array<{ viewport: string; width: number; columns: number }> = [];
     
     // Test at each viewport
-    for (const [key, viewport] of Object.entries(VIEWPORTS)) {
+    for (const viewport of Object.values(VIEWPORTS)) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.waitForTimeout(100); // Allow CSS to apply
       
@@ -78,7 +77,7 @@ test.describe('Responsive Layout Comparison', () => {
     const xl = results.find(r => r.width === 1280);
     
     expect(mobile?.columns).toBe(1); // Mobile: 1 column
-    expect(sm?.columns).toBe(2);     // HTML: 2 columns (differs from React's 1)
+    expect(sm?.columns).toBe(1);     // Both: 1 column (aligned with React)
     expect(md?.columns).toBe(2);     // Both: 2 columns
     expect(lg?.columns).toBe(3);     // Both: 3 columns
     expect(xl?.columns).toBe(4);     // Both: 4 columns
@@ -122,8 +121,8 @@ test.describe('Responsive Layout Comparison', () => {
     const lg = results.find(r => r.width === 1024);
     
     expect(mobile?.columns).toBe(1); // Mobile: 1 column
-    expect(sm?.columns).toBe(2);     // HTML: 2 columns (differs from React's 1)
-    expect(md?.columns).toBe(3);     // HTML: 3 columns (due to duplicate rule)
+    expect(sm?.columns).toBe(1);     // Both: 1 column (aligned with React)
+    expect(md?.columns).toBe(2);     // Both: 2 columns (aligned with React)
     expect(lg?.columns).toBe(3);     // Both: 3 columns
   });
   
@@ -132,7 +131,7 @@ test.describe('Responsive Layout Comparison', () => {
     
     const results: Array<{ viewport: string; width: number; columns: number }> = [];
     
-    for (const [key, viewport] of Object.entries(VIEWPORTS)) {
+    for (const viewport of Object.values(VIEWPORTS)) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.waitForTimeout(100);
       
@@ -165,7 +164,7 @@ test.describe('Responsive Layout Comparison', () => {
     const lg = results.find(r => r.width === 1024);
     
     expect(mobile?.columns).toBe(1); // Mobile: 1 column
-    expect(sm?.columns).toBe(2);     // HTML: 2 columns (differs from React's 1)
+    expect(sm?.columns).toBe(1);     // Both: 1 column (aligned with React)
     expect(md?.columns).toBe(2);     // HTML: 2 columns (React: would be 2 here)
     expect(lg?.columns).toBe(3);     // Both: 3 columns
   });
@@ -224,7 +223,7 @@ test.describe('Responsive Layout Comparison', () => {
     
     const results: Array<{ viewport: string; width: number; fontSize: string }> = [];
     
-    for (const [key, viewport] of Object.entries(VIEWPORTS)) {
+    for (const viewport of Object.values(VIEWPORTS)) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.waitForTimeout(100);
       
