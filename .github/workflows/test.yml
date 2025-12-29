@@ -1,5 +1,8 @@
 name: Test & Visual Regression
 
+permissions:
+  contents: read
+
 on:
   # Run tests on push to main and PRs
   push:
