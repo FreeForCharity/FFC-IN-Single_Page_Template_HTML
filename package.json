@@ -10,7 +10,7 @@
     "test:headed": "playwright test --headed",
     "test:a11y": "playwright test accessibility.spec.ts",
     "lighthouse": "lhci autorun",
-    "links": "linkinator http://localhost:8000 --recurse --skip 'mailto:' --skip 'tel:'"
+    "links": "linkinator http://localhost:8000 --recurse --skip 'mailto:' --skip 'tel:' --skip 'https://fonts.googleapis.com' --skip 'https://www.googletagmanager.com'"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.10.2",
