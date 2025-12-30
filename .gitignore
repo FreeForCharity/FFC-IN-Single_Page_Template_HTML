@@ -6,6 +6,9 @@ node_modules/
 /playwright-report/
 /playwright/.cache/
 
+# Lighthouse CI
+.lighthouseci/
+
 # Misc
 .DS_Store
 *.pem
