@@ -75,7 +75,7 @@ jobs:
             console.log('Workflow statuses (excluding cancelled):', workflowStatuses);
             
             // Verify all required workflows exist and succeeded
-            const missingWorkflows = requiredWorkflows.filter(name => !workflowStatuses[name]);
+            const missingWorkflows = requiredWorkflows.filter(name => !(name in workflowStatuses));
             if (missingWorkflows.length > 0) {
               console.log('Missing workflows:', missingWorkflows);
               core.setFailed(`The following required workflows have not completed successfully: ${missingWorkflows.join(', ')}`);
