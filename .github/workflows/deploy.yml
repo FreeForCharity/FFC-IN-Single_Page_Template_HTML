@@ -63,7 +63,7 @@ jobs:
                 // Skip cancelled runs and only consider completed runs
                 if (run.status === 'completed' && run.conclusion !== 'cancelled') {
                   // Keep the first (most recent) non-cancelled run for each workflow
-                  if (!workflowStatuses[run.name]) {
+                  if (!(run.name in workflowStatuses)) {
                     workflowStatuses[run.name] = run.conclusion;
                   }
                 }
