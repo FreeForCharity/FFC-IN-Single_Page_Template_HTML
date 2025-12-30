@@ -52,26 +52,43 @@ jobs:
               per_page: 100
             });
             
-            // Check if all required workflows succeeded
+            // Find the most recent non-cancelled run for each required workflow
             const workflowStatuses = {};
             for (const run of runs.workflow_runs) {
               if (requiredWorkflows.includes(run.name)) {
-                workflowStatuses[run.name] = run.conclusion;
+                // Skip cancelled runs and only consider completed runs
+                if (run.status === 'completed' && run.conclusion !== 'cancelled') {
+                  // Keep the first (most recent) non-cancelled run for each workflow
+                  if (!workflowStatuses[run.name]) {
+                    workflowStatuses[run.name] = run.conclusion;
+                  }
+                }
               }
             }
             
-            console.log('Workflow statuses:', workflowStatuses);
+            console.log('Commit SHA:', ref);
+            console.log('Required workflows:', requiredWorkflows);
+            console.log('Workflow statuses (excluding cancelled):', workflowStatuses);
             
-            // Verify all required workflows succeeded
-            const allPassed = requiredWorkflows.every(name => 
-              workflowStatuses[name] === 'success'
-            );
-            
-            core.setOutput('all_passed', allPassed);
-            
-            if (!allPassed) {
-              core.setFailed('Not all required workflows have passed');
+            // Verify all required workflows exist and succeeded
+            const missingWorkflows = requiredWorkflows.filter(name => !workflowStatuses[name]);
+            if (missingWorkflows.length > 0) {
+              console.log('Missing workflows:', missingWorkflows);
+              core.setFailed(`The following required workflows have not completed successfully: ${missingWorkflows.join(', ')}`);
+              core.setOutput('all_passed', false);
+              return;
             }
+            
+            const failedWorkflows = requiredWorkflows.filter(name => workflowStatuses[name] !== 'success');
+            if (failedWorkflows.length > 0) {
+              console.log('Failed workflows:', failedWorkflows.map(name => `${name}: ${workflowStatuses[name]}`));
+              core.setFailed(`The following required workflows did not succeed: ${failedWorkflows.map(name => `${name} (${workflowStatuses[name]})`).join(', ')}`);
+              core.setOutput('all_passed', false);
+              return;
+            }
+            
+            console.log('✅ All required workflows passed');
+            core.setOutput('all_passed', true);
     
   build:
     name: Build for GitHub Pages
