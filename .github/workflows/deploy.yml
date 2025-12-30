@@ -85,8 +85,9 @@ jobs:
             
             const failedWorkflows = requiredWorkflows.filter(name => workflowStatuses[name] !== 'success');
             if (failedWorkflows.length > 0) {
-              console.log('Failed workflows:', failedWorkflows.map(name => `${name}: ${workflowStatuses[name]}`));
-              core.setFailed(`The following required workflows did not succeed: ${failedWorkflows.map(name => `${name} (${workflowStatuses[name]})`).join(', ')}`);
+              const failureDetails = failedWorkflows.map(name => `${name} (${workflowStatuses[name]})`);
+              console.log('Failed workflows:', failureDetails);
+              core.setFailed(`The following required workflows did not succeed: ${failureDetails.join(', ')}`);
               core.setOutput('all_passed', false);
               return;
             }
