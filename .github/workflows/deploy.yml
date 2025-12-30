@@ -28,6 +28,10 @@ concurrency:
 jobs:
   # Verify that BOTH required workflows (Test and CodeQL) have succeeded
   # This job uses GitHub API to check the status of both workflows before allowing deployment
+  # 
+  # IMPORTANT: This verification skips cancelled workflow runs to handle the case where
+  # concurrent commits trigger workflow cancellations. It only looks for the most recent
+  # successfully completed (or failed) run of each required workflow.
   verify-workflows:
     name: Verify All Workflows Passed
     runs-on: ubuntu-latest
