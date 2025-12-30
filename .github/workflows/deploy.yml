@@ -74,11 +74,11 @@ jobs:
             console.log('Required workflows:', requiredWorkflows);
             console.log('Workflow statuses (excluding cancelled):', workflowStatuses);
             
-            // Verify all required workflows exist and succeeded
+            // Verify all required workflows have at least one non-cancelled completed run
             const missingWorkflows = requiredWorkflows.filter(name => !(name in workflowStatuses));
             if (missingWorkflows.length > 0) {
-              console.log('Missing workflows:', missingWorkflows);
-              core.setFailed(`The following required workflows have not completed successfully: ${missingWorkflows.join(', ')}`);
+              console.log('Missing workflows (no non-cancelled completed runs):', missingWorkflows);
+              core.setFailed(`The following required workflows have no non-cancelled completed runs (missing or only cancelled): ${missingWorkflows.join(', ')}`);
               core.setOutput('all_passed', false);
               return;
             }
