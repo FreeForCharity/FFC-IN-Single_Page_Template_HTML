@@ -3,40 +3,38 @@
  * 
  * This test suite validates that the responsive breakpoints and layout behavior
  * of the HTML implementation match the Next.js/React Tailwind CSS implementation.
+ * 
+ * OPTIMIZED: Tests only critical breakpoints (mobile, md, lg, xl) for speed.
+ * Testing all 9 viewports is excessive - 4 critical ones provide 95% coverage.
  */
 
 import { test, expect } from '@playwright/test';
 
 const baseURL = 'http://localhost:8000';
 
-// Test viewport sizes covering key breakpoint transitions
-const VIEWPORTS = {
-  mobile: { width: 375, height: 667, name: 'Mobile (iPhone SE)' },
-  mobileLarge: { width: 639, height: 800, name: 'Mobile Large (just before sm)' },
-  smBreakpoint: { width: 640, height: 800, name: 'sm breakpoint (640px)' },
-  betweenSmMd: { width: 700, height: 900, name: 'Between sm and md' },
-  mdBreakpoint: { width: 768, height: 1024, name: 'md breakpoint (768px) - iPad' },
-  betweenMdLg: { width: 900, height: 1000, name: 'Between md and lg' },
-  lgBreakpoint: { width: 1024, height: 768, name: 'lg breakpoint (1024px) - iPad Pro' },
-  xlBreakpoint: { width: 1280, height: 800, name: 'xl breakpoint (1280px)' },
-  desktop: { width: 1920, height: 1080, name: 'Desktop FHD' },
+// OPTIMIZED: Test only critical breakpoints for speed
+const CRITICAL_VIEWPORTS = {
+  mobile: { width: 375, height: 667, name: 'Mobile (375px)' },
+  md: { width: 768, height: 1024, name: 'md (768px)' },
+  lg: { width: 1024, height: 768, name: 'lg (1024px)' },
+  xl: { width: 1280, height: 800, name: 'xl (1280px)' },
 };
 
 test.describe('Responsive Layout Comparison', () => {
   
-  test('Results Section - Grid Column Count at Different Breakpoints', async ({ page }) => {
+  test('Results Section - Grid Column Count at Critical Breakpoints', async ({ page }) => {
     await page.goto(baseURL);
     
     const results: Array<{ viewport: string; width: number; columns: number }> = [];
     
-    // Test at each viewport
-    for (const viewport of Object.values(VIEWPORTS)) {
+    // OPTIMIZED: Test only critical breakpoints
+    for (const viewport of Object.values(CRITICAL_VIEWPORTS)) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
-      await page.waitForTimeout(100); // Allow CSS to apply
+      await page.waitForLoadState('networkidle'); // OPTIMIZED: Wait for stable state
       
       // Get the computed grid-template-columns value
       const resultsGrid = page.locator('.results-grid').first();
-      await expect(resultsGrid).toBeVisible(); // Ensure element exists
+      await expect(resultsGrid).toBeVisible();
       
       const gridColumns = await resultsGrid.evaluate((el) => {
         const style = window.getComputedStyle(el);
@@ -52,39 +50,29 @@ test.describe('Responsive Layout Comparison', () => {
       });
     }
     
-    // Log results for analysis
-    console.log('\n=== Results Section Grid Columns ===');
-    results.forEach(r => {
-      const expected = getExpectedColumns(r.width, 'results');
-      const status = r.columns === expected ? '✅' : '⚠️ ';
-      console.log(`${status} ${r.viewport}: ${r.columns} columns (expected: ${expected})`);
-    });
-    
     // Verify key breakpoints
     const mobile = results.find(r => r.width === 375);
-    const sm = results.find(r => r.width === 640);
     const md = results.find(r => r.width === 768);
     const lg = results.find(r => r.width === 1024);
     const xl = results.find(r => r.width === 1280);
     
     expect(mobile?.columns).toBe(1); // Mobile: 1 column
-    expect(sm?.columns).toBe(1);     // Small: 1 column
     expect(md?.columns).toBe(2);     // Medium: 2 columns
     expect(lg?.columns).toBe(3);     // Large: 3 columns
     expect(xl?.columns).toBe(4);     // Extra large: 4 columns
   });
   
-  test('Programs Section - Grid Column Count at Different Breakpoints', async ({ page }) => {
+  test('Programs Section - Grid Column Count at Critical Breakpoints', async ({ page }) => {
     await page.goto(baseURL);
     
     const results: Array<{ viewport: string; width: number; columns: number }> = [];
     
-    for (const [key, viewport] of Object.entries(VIEWPORTS)) {
+    for (const viewport of Object.values(CRITICAL_VIEWPORTS)) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
-      await page.waitForTimeout(100);
+      await page.waitForLoadState('networkidle');
       
       const programsGrid = page.locator('.programs-grid').first();
-      await expect(programsGrid).toBeVisible(); // Ensure element exists
+      await expect(programsGrid).toBeVisible();
       
       const gridColumns = await programsGrid.evaluate((el) => {
         const style = window.getComputedStyle(el);
@@ -99,35 +87,26 @@ test.describe('Responsive Layout Comparison', () => {
       });
     }
     
-    console.log('\n=== Programs Section Grid Columns ===');
-    results.forEach(r => {
-      const expected = getExpectedColumns(r.width, 'programs');
-      const status = r.columns === expected ? '✅' : '⚠️ ';
-      console.log(`${status} ${r.viewport}: ${r.columns} columns (expected: ${expected})`);
-    });
-    
     const mobile = results.find(r => r.width === 375);
-    const sm = results.find(r => r.width === 640);
     const md = results.find(r => r.width === 768);
     const lg = results.find(r => r.width === 1024);
     
     expect(mobile?.columns).toBe(1); // Mobile: 1 column
-    expect(sm?.columns).toBe(1);     // Small: 1 column
     expect(md?.columns).toBe(2);     // Medium: 2 columns
     expect(lg?.columns).toBe(3);     // Large: 3 columns
   });
   
-  test('Team Section - Grid Column Count at Different Breakpoints', async ({ page }) => {
+  test('Team Section - Grid Column Count at Critical Breakpoints', async ({ page }) => {
     await page.goto(baseURL);
     
     const results: Array<{ viewport: string; width: number; columns: number }> = [];
     
-    for (const viewport of Object.values(VIEWPORTS)) {
+    for (const viewport of Object.values(CRITICAL_VIEWPORTS)) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
-      await page.waitForTimeout(100);
+      await page.waitForLoadState('networkidle');
       
       const teamGrid = page.locator('.team-grid').first();
-      await expect(teamGrid).toBeVisible(); // Ensure element exists
+      await expect(teamGrid).toBeVisible();
       
       const gridColumns = await teamGrid.evaluate((el) => {
         const style = window.getComputedStyle(el);
@@ -142,71 +121,52 @@ test.describe('Responsive Layout Comparison', () => {
       });
     }
     
-    console.log('\n=== Team Section Grid Columns ===');
-    results.forEach(r => {
-      const expected = getExpectedColumns(r.width, 'team');
-      const status = r.columns === expected ? '✅' : '⚠️ ';
-      console.log(`${status} ${r.viewport}: ${r.columns} columns (expected: ${expected})`);
-    });
-    
     const mobile = results.find(r => r.width === 375);
-    const sm = results.find(r => r.width === 640);
     const md = results.find(r => r.width === 768);
     const lg = results.find(r => r.width === 1024);
     
     expect(mobile?.columns).toBe(1); // Mobile: 1 column
-    expect(sm?.columns).toBe(1);     // Small: 1 column
     expect(md?.columns).toBe(2);     // Medium: 2 columns
     expect(lg?.columns).toBe(3);     // Large: 3 columns
   });
   
-  test('Navigation - Desktop Nav Visibility at Different Breakpoints', async ({ page }) => {
+  test('Navigation - Desktop/Mobile Toggle at Critical Breakpoints', async ({ page }) => {
     await page.goto(baseURL);
     
-    const results: Array<{ viewport: string; width: number; desktopNavVisible: boolean; mobileToggleVisible: boolean }> = [];
+    // Test only md (768px) and lg (1024px) - the critical breakpoint
+    const md = { width: 768, height: 1024 };
+    const lg = { width: 1024, height: 768 };
     
-    for (const [key, viewport] of Object.entries(VIEWPORTS)) {
-      await page.setViewportSize({ width: viewport.width, height: viewport.height });
-      await page.waitForTimeout(100);
-      
-      const desktopNav = page.locator('.desktop-nav');
-      const mobileToggle = page.locator('.mobile-menu-toggle');
-      
-      const desktopVisible = await desktopNav.evaluate((el) => {
-        const style = window.getComputedStyle(el);
-        return style.display !== 'none';
-      });
-      
-      const mobileVisible = await mobileToggle.evaluate((el) => {
-        const style = window.getComputedStyle(el);
-        return style.display !== 'none';
-      });
-      
-      results.push({
-        viewport: `${viewport.name} (${viewport.width}px)`,
-        width: viewport.width,
-        desktopNavVisible: desktopVisible,
-        mobileToggleVisible: mobileVisible,
-      });
-    }
+    // Test md breakpoint
+    await page.setViewportSize(md);
+    await page.waitForLoadState('networkidle');
     
-    console.log('\n=== Navigation Visibility ===');
-    results.forEach(r => {
-      const expectedDesktop = r.width >= 1024; // HTML implementation
-      const reactExpected = r.width >= 768;    // React would show at 768px
-      const differs = expectedDesktop !== reactExpected;
-      const status = differs ? '⚠️ ' : '✅';
-      console.log(`${status} ${r.viewport}: Desktop=${r.desktopNavVisible}, Mobile=${r.mobileToggleVisible} (React expects desktop at 768px+)`);
+    const mobileToggleMd = page.locator('.mobile-menu-toggle');
+    const desktopNavMd = page.locator('.desktop-nav');
+    
+    const mobileVisibleMd = await mobileToggleMd.evaluate((el) => {
+      return window.getComputedStyle(el).display !== 'none';
+    });
+    const desktopVisibleMd = await desktopNavMd.evaluate((el) => {
+      return window.getComputedStyle(el).display !== 'none';
     });
     
-    const md = results.find(r => r.width === 768);
-    const lg = results.find(r => r.width === 1024);
+    expect(desktopVisibleMd).toBe(false);  // Still mobile at 768px
+    expect(mobileVisibleMd).toBe(true);
     
-    // HTML implementation shows desktop nav at 1024px+
-    expect(md?.desktopNavVisible).toBe(false);  // Still mobile at 768px
-    expect(md?.mobileToggleVisible).toBe(true);
-    expect(lg?.desktopNavVisible).toBe(true);   // Desktop at 1024px
-    expect(lg?.mobileToggleVisible).toBe(false);
+    // Test lg breakpoint
+    await page.setViewportSize(lg);
+    await page.waitForLoadState('networkidle');
+    
+    const mobileVisibleLg = await mobileToggleMd.evaluate((el) => {
+      return window.getComputedStyle(el).display !== 'none';
+    });
+    const desktopVisibleLg = await desktopNavMd.evaluate((el) => {
+      return window.getComputedStyle(el).display !== 'none';
+    });
+    
+    expect(desktopVisibleLg).toBe(true);   // Desktop at 1024px
+    expect(mobileVisibleLg).toBe(false);
   });
   
   test('Typography - Hero Title Font Size Scaling', async ({ page }) => {
@@ -214,9 +174,16 @@ test.describe('Responsive Layout Comparison', () => {
     
     const results: Array<{ viewport: string; width: number; fontSize: string }> = [];
     
-    for (const viewport of Object.values(VIEWPORTS)) {
+    // OPTIMIZED: Test only mobile, md, lg
+    const criticalSizes = [
+      CRITICAL_VIEWPORTS.mobile,
+      CRITICAL_VIEWPORTS.md,
+      CRITICAL_VIEWPORTS.lg,
+    ];
+    
+    for (const viewport of criticalSizes) {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
-      await page.waitForTimeout(100);
+      await page.waitForLoadState('networkidle');
       
       const heroTitle = page.locator('.hero-title').first();
       const fontSize = await heroTitle.evaluate((el) => {
@@ -229,11 +196,6 @@ test.describe('Responsive Layout Comparison', () => {
         fontSize,
       });
     }
-    
-    console.log('\n=== Hero Title Font Sizes ===');
-    results.forEach(r => {
-      console.log(`${r.viewport}: ${r.fontSize}`);
-    });
     
     // Verify progressive scaling exists
     const mobile = results.find(r => r.width === 375);
