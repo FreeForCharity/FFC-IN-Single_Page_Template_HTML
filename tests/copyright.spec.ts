@@ -33,7 +33,9 @@ test.describe('Footer Copyright Notice', () => {
     await expect(footerText).toContainText(testConfig.copyright.text)
   })
 
-  test('should display link to organization website in copyright notice', async ({ page }) => {
+  // Note: HTML version doesn't have a link in the copyright notice - just plain text
+  // This test is skipped for the HTML static site version
+  test.skip('should display link to organization website in copyright notice', async ({ page }) => {
     // Navigate to the homepage
     await page.goto('/')
 

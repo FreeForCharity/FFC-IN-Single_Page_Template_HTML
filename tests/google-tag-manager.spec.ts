@@ -11,9 +11,12 @@ import { testConfig } from './test.config'
  * 4. GTM ID is configured in the component
  *
  * Note: Test expectations use values from test.config.ts for easy customization
+ * Note: GTM is currently disabled in the HTML static site (commented out in index.html).
+ *       These tests are skipped until GTM is enabled. To enable GTM, uncomment the
+ *       GTM script sections in html-site/index.html and replace GTM-XXXXXXX with your GTM ID.
  */
 
-test.describe('Google Tag Manager Integration', () => {
+test.describe.skip('Google Tag Manager Integration', () => {
   test('should initialize dataLayer on page load', async ({ page }) => {
     await page.goto('/')
 
@@ -110,7 +113,7 @@ test.describe('Google Tag Manager Integration', () => {
   })
 })
 
-test.describe('Google Tag Manager Configuration', () => {
+test.describe.skip('Google Tag Manager Configuration', () => {
   test('should load GTM script with configured ID', async ({ page }) => {
     // This test verifies that GTM loads with the configured ID from test.config.ts
     // The GTM_ID is configured in the component

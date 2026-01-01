@@ -17,9 +17,26 @@ concurrency:
 
 jobs:
   test:
-    name: Playwright Tests & Visual Regression
+    name: Playwright Tests - ${{ matrix.test-group }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        test-group:
+          - ui-components
+          - interactive-features
+          - visual-responsive
+          - integration
+        include:
+          - test-group: ui-components
+            tests: 'logo.spec.ts mission-video.spec.ts copyright.spec.ts'
+          - test-group: interactive-features
+            tests: 'cookie-consent.spec.ts application-form.spec.ts events.spec.ts'
+          - test-group: visual-responsive
+            tests: 'visual-regression.spec.ts responsive-comparison.spec.ts animated-numbers.spec.ts'
+          - test-group: integration
+            tests: 'google-tag-manager.spec.ts social-links.spec.ts image-loading.spec.ts'
 
     steps:
       - name: Checkout repository
@@ -37,8 +54,8 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
-      - name: Run Playwright tests
-        run: npm test
+      - name: Run Playwright tests - ${{ matrix.test-group }}
+        run: npx playwright test ${{ matrix.tests }}
         env:
           CI: true
 
@@ -46,7 +63,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.test-group }}
           path: playwright-report/
           retention-days: 30
 
@@ -54,7 +71,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: test-screenshots
+          name: test-screenshots-${{ matrix.test-group }}
           path: test-results/
           retention-days: 30
 

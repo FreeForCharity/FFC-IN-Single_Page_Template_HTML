@@ -28,6 +28,10 @@ concurrency:
 jobs:
   # Verify that BOTH required workflows (Test and CodeQL) have succeeded
   # This job uses GitHub API to check the status of both workflows before allowing deployment
+  # 
+  # IMPORTANT: This verification skips cancelled workflow runs to handle the case where
+  # concurrent commits trigger workflow cancellations. It only looks for the most recent
+  # successfully completed (or failed) run of each required workflow.
   verify-workflows:
     name: Verify All Workflows Passed
     runs-on: ubuntu-latest
@@ -52,26 +56,44 @@ jobs:
               per_page: 100
             });
             
-            // Check if all required workflows succeeded
+            // Find the most recent non-cancelled run for each required workflow
             const workflowStatuses = {};
             for (const run of runs.workflow_runs) {
               if (requiredWorkflows.includes(run.name)) {
-                workflowStatuses[run.name] = run.conclusion;
+                // Skip cancelled runs and only consider completed runs
+                if (run.status === 'completed' && run.conclusion !== 'cancelled') {
+                  // Keep the first (most recent) non-cancelled run for each workflow
+                  if (!(run.name in workflowStatuses)) {
+                    workflowStatuses[run.name] = run.conclusion;
+                  }
+                }
               }
             }
             
-            console.log('Workflow statuses:', workflowStatuses);
+            console.log('Commit SHA:', ref);
+            console.log('Required workflows:', requiredWorkflows);
+            console.log('Workflow statuses (excluding cancelled):', workflowStatuses);
             
-            // Verify all required workflows succeeded
-            const allPassed = requiredWorkflows.every(name => 
-              workflowStatuses[name] === 'success'
-            );
-            
-            core.setOutput('all_passed', allPassed);
-            
-            if (!allPassed) {
-              core.setFailed('Not all required workflows have passed');
+            // Verify all required workflows have at least one non-cancelled completed run
+            const missingWorkflows = requiredWorkflows.filter(name => !(name in workflowStatuses));
+            if (missingWorkflows.length > 0) {
+              console.log('Missing workflows (no non-cancelled completed runs):', missingWorkflows);
+              core.setFailed(`The following required workflows have no non-cancelled completed runs (missing or only cancelled): ${missingWorkflows.join(', ')}`);
+              core.setOutput('all_passed', false);
+              return;
             }
+            
+            const failedWorkflows = requiredWorkflows.filter(name => workflowStatuses[name] !== 'success');
+            if (failedWorkflows.length > 0) {
+              const failureDetails = failedWorkflows.map(name => `${name} (${workflowStatuses[name]})`);
+              console.log('Failed workflows:', failureDetails);
+              core.setFailed(`The following required workflows did not succeed: ${failureDetails.join(', ')}`);
+              core.setOutput('all_passed', false);
+              return;
+            }
+            
+            console.log('✅ All required workflows passed');
+            core.setOutput('all_passed', true);
     
   build:
     name: Build for GitHub Pages
