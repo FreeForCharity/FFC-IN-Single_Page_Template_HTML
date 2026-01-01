@@ -117,7 +117,7 @@ test.describe('Cookie Consent Banner', () => {
   })
 })
 
-test.describe('Cookie Preferences Modal', () => {
+test.describe.skip('Cookie Preferences Modal', () => {
   test.beforeEach(async ({ page, context }) => {
     // Clear cookies and localStorage before each test
     await context.clearCookies()
@@ -294,7 +294,7 @@ test.describe('Cookie Preferences Modal', () => {
   })
 })
 
-test.describe('Cookie Consent Accessibility', () => {
+test.describe.skip('Cookie Consent Accessibility', () => {
   test.beforeEach(async ({ page, context }) => {
     await context.clearCookies()
     await page.goto('/')

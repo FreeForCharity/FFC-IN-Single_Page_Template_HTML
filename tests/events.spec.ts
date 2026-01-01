@@ -12,6 +12,7 @@ import { testConfig } from './test.config'
  * 5. The component is keyboard accessible
  *
  * Note: Test expectations use values from test.config.ts for easy customization
+ * Note: These tests may be slow (~15-20s) due to iframe loading
  */
 
 test.describe('Events Section', () => {
