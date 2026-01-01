@@ -74,8 +74,8 @@ export const testConfig = {
    * Used in: tests/copyright.spec.ts
    */
   copyright: {
-    text: 'All Rights Are Reserved by Free For Charity a US 501c3 Non Profit',
-    searchText: 'All Rights Are Reserved',
+    text: 'All rights reserved',
+    searchText: 'All rights reserved',
     linkUrl: 'https://freeforcharity.org',
     linkText: 'https://freeforcharity.org',
   },
