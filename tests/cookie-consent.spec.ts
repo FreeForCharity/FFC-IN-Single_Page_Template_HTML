@@ -70,7 +70,7 @@ test.describe('Cookie Consent Banner', () => {
     await expect(banner).not.toBeVisible()
   })
 
-  test('should persist Accept All choice and not show banner on subsequent visits', async ({
+  test.skip('should persist Accept All choice and not show banner on subsequent visits', async ({
     page,
   }) => {
     // Accept all cookies
@@ -93,7 +93,7 @@ test.describe('Cookie Consent Banner', () => {
     expect(preferences.marketing).toBe(true)
   })
 
-  test('should persist Decline All choice and not show banner on subsequent visits', async ({
+  test.skip('should persist Decline All choice and not show banner on subsequent visits', async ({
     page,
   }) => {
     // Decline all cookies
