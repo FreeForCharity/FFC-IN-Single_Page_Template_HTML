@@ -201,10 +201,10 @@ test.describe('Cookie Preferences Modal', () => {
     await expect(analyticsToggle).not.toBeChecked()
     await expect(marketingToggle).not.toBeChecked()
 
-    await analyticsToggle.click({ force: true })
+    await analyticsToggle.check({ force: true })
     await expect(analyticsToggle).toBeChecked()
 
-    await marketingToggle.click({ force: true })
+    await marketingToggle.check({ force: true })
     await expect(marketingToggle).toBeChecked()
   })
 
@@ -214,7 +214,7 @@ test.describe('Cookie Preferences Modal', () => {
     await expect(modal).toBeVisible()
 
     const analyticsToggle = modal.getByRole('checkbox', { name: 'Enable analytics cookies' })
-    await analyticsToggle.click({ force: true })
+    await analyticsToggle.check({ force: true })
     await expect(analyticsToggle).toBeChecked()
 
     await page.getByRole('button', { name: testConfig.cookieConsent.buttons.savePreferences }).click()
