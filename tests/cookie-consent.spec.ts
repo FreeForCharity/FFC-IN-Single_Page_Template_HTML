@@ -195,17 +195,19 @@ test.describe('Cookie Preferences Modal', () => {
     const modal = page.locator('[role="dialog"][aria-modal="true"]')
     await expect(modal).toBeVisible()
 
-    const analyticsToggle = modal.getByRole('checkbox', { name: 'Enable analytics cookies' })
-    const marketingToggle = modal.getByRole('checkbox', { name: 'Enable marketing cookies' })
+    const analyticsInput = modal.locator('#cookieAnalytics')
+    const marketingInput = modal.locator('#cookieMarketing')
+    const analyticsToggle = modal.locator('label.cookie-toggle', { has: analyticsInput }).locator('.cookie-toggle-slider')
+    const marketingToggle = modal.locator('label.cookie-toggle', { has: marketingInput }).locator('.cookie-toggle-slider')
 
-    await expect(analyticsToggle).not.toBeChecked()
-    await expect(marketingToggle).not.toBeChecked()
+    await expect(analyticsInput).not.toBeChecked()
+    await expect(marketingInput).not.toBeChecked()
 
-    await analyticsToggle.check({ force: true })
-    await expect(analyticsToggle).toBeChecked()
+    await analyticsToggle.click({ force: true })
+    await expect(analyticsInput).toBeChecked()
 
-    await marketingToggle.check({ force: true })
-    await expect(marketingToggle).toBeChecked()
+    await marketingToggle.click({ force: true })
+    await expect(marketingInput).toBeChecked()
   })
 
   test('should save custom preferences correctly', async ({ page, context }) => {
@@ -213,9 +215,10 @@ test.describe('Cookie Preferences Modal', () => {
     const modal = page.locator('[role="dialog"][aria-modal="true"]')
     await expect(modal).toBeVisible()
 
-    const analyticsToggle = modal.getByRole('checkbox', { name: 'Enable analytics cookies' })
-    await analyticsToggle.check({ force: true })
-    await expect(analyticsToggle).toBeChecked()
+    const analyticsInput = modal.locator('#cookieAnalytics')
+    const analyticsToggle = modal.locator('label.cookie-toggle', { has: analyticsInput }).locator('.cookie-toggle-slider')
+    await analyticsToggle.click({ force: true })
+    await expect(analyticsInput).toBeChecked()
 
     await page.getByRole('button', { name: testConfig.cookieConsent.buttons.savePreferences }).click()
 
