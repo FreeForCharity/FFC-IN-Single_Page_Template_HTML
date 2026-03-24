@@ -197,8 +197,8 @@ test.describe('Cookie Preferences Modal', () => {
 
     const analyticsInput = modal.locator('#cookieAnalytics')
     const marketingInput = modal.locator('#cookieMarketing')
-    const analyticsToggle = modal.locator('label.cookie-toggle', { has: analyticsInput }).locator('.cookie-toggle-slider')
-    const marketingToggle = modal.locator('label.cookie-toggle', { has: marketingInput }).locator('.cookie-toggle-slider')
+    const analyticsToggle = modal.locator('#cookieAnalytics + .cookie-toggle-slider')
+    const marketingToggle = modal.locator('#cookieMarketing + .cookie-toggle-slider')
 
     await expect(analyticsInput).not.toBeChecked()
     await expect(marketingInput).not.toBeChecked()
@@ -216,7 +216,7 @@ test.describe('Cookie Preferences Modal', () => {
     await expect(modal).toBeVisible()
 
     const analyticsInput = modal.locator('#cookieAnalytics')
-    const analyticsToggle = modal.locator('label.cookie-toggle', { has: analyticsInput }).locator('.cookie-toggle-slider')
+    const analyticsToggle = modal.locator('#cookieAnalytics + .cookie-toggle-slider')
     await analyticsToggle.click({ force: true })
     await expect(analyticsInput).toBeChecked()
 
