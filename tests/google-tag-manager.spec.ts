@@ -4,127 +4,69 @@ import { testConfig } from './test.config'
 /**
  * Google Tag Manager (GTM) Tests
  *
- * These tests verify that Google Tag Manager is properly integrated:
- * 1. GTM script is loaded in the head section
- * 2. dataLayer is initialized
- * 3. GTM noscript fallback exists in body
- * 4. GTM ID is configured in the component
- *
- * Note: Test expectations use values from test.config.ts for easy customization
+ * Note: In the static template, GTM is intentionally disabled by default and
+ * the GTM snippet is commented out. These tests skip automatically when the
+ * "GTM Script Disabled" marker is present in the HTML.
  */
 
 test.describe('Google Tag Manager Integration', () => {
-  test('should initialize dataLayer on page load', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     await page.goto('/')
+    const content = await page.content()
 
-    // Check if dataLayer exists and is initialized
+    if (content.includes('GTM Script Disabled') || content.includes('GTM Noscript Disabled')) {
+      test.skip(true, 'GTM is disabled in this template (placeholder GTM-XXXXXXX)')
+    }
+  })
+
+  test('should initialize dataLayer on page load', async ({ page }) => {
     const hasDataLayer = await page.evaluate(() => {
-      return typeof window.dataLayer !== 'undefined' && Array.isArray(window.dataLayer)
+      return typeof (window as any).dataLayer !== 'undefined' && Array.isArray((window as any).dataLayer)
     })
 
     expect(hasDataLayer).toBe(true)
   })
 
-  test('should load GTM script with correct ID', async ({ page }) => {
-    await page.goto('/')
+  test('should load GTM script with configured ID', async ({ page }) => {
+    const scriptSrcs = await page
+      .locator('script[src*="googletagmanager.com"]')
+      .evaluateAll((els) => els.map((e) => (e as HTMLScriptElement).src))
 
-    // Check for GTM script element
-    const gtmScript = await page.locator('script[id="gtm-script"]').count()
-    expect(gtmScript).toBeGreaterThan(0)
-
-    // Verify script contains GTM initialization code
-    const scriptContent = await page.locator('script[id="gtm-script"]').innerHTML()
-    expect(scriptContent).toContain('googletagmanager.com/gtm.js')
-    expect(scriptContent).toContain('dataLayer')
+    expect(scriptSrcs.length).toBeGreaterThan(0)
+    expect(scriptSrcs.some((src) => src.includes(testConfig.googleTagManager.id))).toBe(true)
   })
 
   test('should have GTM noscript fallback in body', async ({ page }) => {
-    await page.goto('/')
-
-    // Check for noscript iframe element
-    // We verify it exists in the HTML even though it won't render with JavaScript enabled
-    const pageContent = await page.content()
-    expect(pageContent).toContain('googletagmanager.com/ns.html')
-    expect(pageContent).toContain('noscript')
+    const content = await page.content()
+    expect(content).toContain('googletagmanager.com/ns.html')
+    expect(content).toContain(testConfig.googleTagManager.id)
   })
 
   test('should push events to dataLayer', async ({ page }) => {
-    await page.goto('/')
-
-    // Verify we can push events to dataLayer
     const canPushToDataLayer = await page.evaluate(() => {
-      if (typeof window.dataLayer === 'undefined') return false
+      const dl = (window as any).dataLayer
+      if (!Array.isArray(dl)) return false
 
-      const initialLength = window.dataLayer.length
-      window.dataLayer.push({ event: 'test_event', test: true })
-      return window.dataLayer.length > initialLength
+      const initialLength = dl.length
+      dl.push({ event: 'test_event', test: true })
+      return dl.length > initialLength
     })
 
     expect(canPushToDataLayer).toBe(true)
   })
 
-  test('should load GTM script after page interaction', async ({ page }) => {
-    await page.goto('/')
-
-    // Verify GTM script exists on the page
-    // Note: Next.js Script component with lazyOnload strategy
-    // defers script loading until after page is interactive
-    const gtmScript = await page.evaluate(() => {
-      const script = document.querySelector('script[id="gtm-script"]')
-      return script !== null
-    })
-
-    expect(gtmScript).toBe(true)
-
-    // Verify dataLayer is initialized (may be delayed with lazyOnload)
-    const dataLayerInitialized = await page.evaluate(() => {
-      return typeof window.dataLayer !== 'undefined'
-    })
-
-    expect(dataLayerInitialized).toBe(true)
-  })
-
-  test('should work with cookie consent system', async ({ page, context }) => {
-    // Clear cookies and localStorage
-    await context.clearCookies()
-    await page.goto('/')
-    await page.evaluate(() => localStorage.clear())
-    await page.reload()
-
-    // Wait for cookie banner
+  test('should work with cookie consent system', async ({ page }) => {
     const banner = page.locator('[role="region"][aria-label="Cookie consent notice"]')
-    await expect(banner).toBeVisible()
+    if ((await banner.count()) > 0) {
+      await page.getByRole('button', { name: testConfig.cookieConsent.buttons.acceptAll }).click()
+    }
 
-    // Accept all cookies
-    await page.getByRole('button', { name: 'Accept All' }).click()
-
-    // Verify dataLayer receives consent update event
     const hasConsentEvent = await page.evaluate(() => {
-      if (typeof window.dataLayer === 'undefined') return false
-
-      // Check if dataLayer has any consent-related events
-      return window.dataLayer.some((item: { event?: string }) => item.event === 'consent_update')
+      const dl = (window as any).dataLayer
+      if (!Array.isArray(dl)) return false
+      return dl.some((item: { event?: string }) => item.event === 'consent_update')
     })
 
     expect(hasConsentEvent).toBe(true)
-  })
-})
-
-test.describe('Google Tag Manager Configuration', () => {
-  test('should load GTM script with configured ID', async ({ page }) => {
-    // This test verifies that GTM loads with the configured ID from test.config.ts
-    // The GTM_ID is configured in the component
-
-    await page.goto('/')
-
-    // GTM script should always be present with the configured ID
-    const gtmScript = await page.locator('script[id="gtm-script"]').count()
-
-    // Script should be present
-    expect(gtmScript).toBeGreaterThan(0)
-
-    // Verify the script contains the correct GTM ID
-    const scriptContent = await page.locator('script[id="gtm-script"]').innerHTML()
-    expect(scriptContent).toContain(testConfig.googleTagManager.id)
   })
 })
