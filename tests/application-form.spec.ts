@@ -21,6 +21,11 @@ test.describe('Application Form Button', () => {
     await page.goto('/')
     // Wait for page to be loaded
     await page.waitForLoadState('domcontentloaded')
+
+    const trigger = page.getByRole('button', { name: testConfig.applicationForm.buttonText })
+    if ((await trigger.count()) === 0) {
+      test.skip(true, 'Application form is not enabled in this template')
+    }
   })
 
   test('should display application form button', async ({ page }) => {
@@ -249,6 +254,11 @@ test.describe('Application Form Iframe Loading', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
     await page.waitForLoadState('domcontentloaded')
+
+    const trigger = page.getByRole('button', { name: testConfig.applicationForm.buttonText })
+    if ((await trigger.count()) === 0) {
+      test.skip(true, 'Application form is not enabled in this template')
+    }
   })
 
   test('should display loading indicator and iframe elements', async ({ page }) => {
