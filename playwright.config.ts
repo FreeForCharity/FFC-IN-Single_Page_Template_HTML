@@ -55,10 +55,15 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
-  // Use more workers for better performance (1 in CI for stability, 4 locally for speed)
-  workers: process.env.CI ? 2 : 4,
-  // Reporter to use
-  reporter: 'html',
+  // Keep one worker per shard in CI for predictable runtime.
+  workers: process.env.CI ? 1 : 4,
+  // Emit line output in CI so long shards don't get canceled for inactivity.
+  reporter: process.env.CI
+    ? [
+        ['line'],
+        ['html', { open: 'never' }],
+      ]
+    : 'html',
 
   use: {
     // Base URL for tests (html-site served on port 8000)
