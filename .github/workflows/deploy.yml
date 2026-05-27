@@ -85,7 +85,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Setup Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
         # Note: No static_site_generator parameter needed for pure HTML deployment
         # The html-site directory contains pre-built static files ready to serve
 
